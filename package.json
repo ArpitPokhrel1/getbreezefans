@@ -11,15 +11,24 @@
     "test:watch": "vitest",
     "db:push": "prisma db push",
     "db:init:sqlite": "node scripts/init-sqlite.mjs",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "generate:nanobanana": "node scripts/generate-nanobanana-assets.mjs",
+    "remotion:studio": "remotion studio remotion/index.ts",
+    "remotion:still": "remotion still remotion/index.ts BreezePod3DHero public/images/remotion-3d-hero.png --frame=45"
   },
   "dependencies": {
+    "@google/genai": "^1.50.1",
     "@prisma/client": "^6.17.1",
+    "@react-three/fiber": "^9.6.1",
+    "@remotion/cli": "^4.0.454",
+    "@remotion/three": "^4.0.454",
     "lucide-react": "^0.468.0",
     "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "remotion": "^4.0.454",
     "stripe": "^17.5.0",
+    "three": "^0.184.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

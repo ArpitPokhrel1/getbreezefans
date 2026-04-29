@@ -1,0 +1,12 @@
+{% liquid
+  assign price_target = product.selected_or_first_available_variant | default: product
+  assign compare_at_price = price_target.compare_at_price
+  assign price = price_target.price
+%}
+
+<span class="bp-price" data-bp-price>
+  {{ price | money }}
+</span>
+{% if compare_at_price > price %}
+  <s class="bp-compare-price" data-bp-compare-price>{{ compare_at_price | money }}</s>
+{% endif %}

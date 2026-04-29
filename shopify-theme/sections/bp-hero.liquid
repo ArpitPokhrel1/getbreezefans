@@ -1,0 +1,111 @@
+{% liquid
+  assign hero_product = section.settings.hero_product
+  assign hero_title = section.settings.heading
+  assign hero_copy = section.settings.copy
+
+  if hero_product != blank and section.settings.use_product_copy
+    assign hero_title = hero_product.title
+    assign hero_copy = hero_product.description | strip_html | truncate: 180
+  endif
+
+  if hero_title == blank
+    assign hero_title = 'Cooler commutes. Lighter nights.'
+  endif
+
+  assign hero_image_alt = hero_product.featured_image.alt | default: hero_product.title
+%}
+
+<section class="bp-hero" id="top">
+  <div class="bp-hero__copy">
+    <span class="bp-eyebrow">{{ section.settings.eyebrow }}</span>
+    <h1>{{ hero_title }}</h1>
+    <p>{{ hero_copy }}</p>
+
+    <div class="bp-actions">
+      {% if hero_product != blank %}
+        <a class="bp-button bp-button--primary" href="{{ hero_product.url }}">
+          Shop from {{ hero_product.price | money }}
+        </a>
+      {% else %}
+        <a class="bp-button bp-button--primary" href="#shop">Shop the collection</a>
+      {% endif %}
+      <a class="bp-button bp-button--secondary" href="#bp-specs">See specifications</a>
+    </div>
+
+    <div class="bp-metrics" aria-label="Store highlights">
+      <span><strong>US</strong> tracked delivery</span>
+      <span><strong>10</strong> day inspection</span>
+      <span><strong>Shopify</strong> secure checkout</span>
+    </div>
+  </div>
+
+  <div class="bp-media-board">
+    <div class="bp-media-board__main">
+      {% if hero_product.featured_image != blank %}
+        {{ hero_product.featured_image | image_url: width: 1100 | image_tag: loading: 'eager', sizes: '(max-width: 900px) 100vw, 48vw', alt: hero_image_alt }}
+      {% else %}
+        <img src="{{ 'portable-turbo-fan-main.webp' | asset_url }}" alt="Portable turbo fan product photo" loading="eager">
+      {% endif %}
+    </div>
+    <div class="bp-media-board__caption">
+      <strong>{{ hero_product.title | default: 'BreezePod Turbo Fan' }}</strong>
+      <span>{{ section.settings.caption }}</span>
+    </div>
+    <div class="bp-media-board__mini bp-media-board__mini--top">
+      <img src="{{ 'portable-turbo-fan-detail.webp' | asset_url }}" alt="Portable turbo fan detail">
+    </div>
+    <div class="bp-media-board__mini bp-media-board__mini--bottom">
+      <img src="{{ 'cooling-blanket-chair.jpg' | asset_url }}" alt="Cooling blanket in a bright room">
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BreezePod hero",
+  "tag": "section",
+  "class": "bp-section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "hero_product",
+      "label": "Hero product"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_product_copy",
+      "label": "Use selected product title and description",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Summer comfort, built for real routines"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Cooler commutes. Lighter nights."
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "BreezePod pairs a real portable neck fan with a lightweight cooling blanket so customers can solve the two summer moments they actually complain about: moving through heat and trying to rest in it."
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Media caption",
+      "default": "Pocket airflow and lighter bedding for warm days."
+    }
+  ],
+  "presets": [
+    {
+      "name": "BreezePod hero"
+    }
+  ]
+}
+{% endschema %}

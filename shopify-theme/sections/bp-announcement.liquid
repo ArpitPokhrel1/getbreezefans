@@ -1,0 +1,39 @@
+{% if section.settings.show_bar %}
+  <div class="bp-announcement" role="region" aria-label="Store policies">
+    <span>{{ section.settings.message_1 }}</span>
+    <span>{{ section.settings.message_2 }}</span>
+    <span>{{ section.settings.message_3 }}</span>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "BreezePod announcement",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_bar",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "message_1",
+      "label": "Message 1",
+      "default": "Tracked delivery"
+    },
+    {
+      "type": "text",
+      "id": "message_2",
+      "label": "Message 2",
+      "default": "10-day guarantee"
+    },
+    {
+      "type": "text",
+      "id": "message_3",
+      "label": "Message 3",
+      "default": "Secure Shopify checkout"
+    }
+  ]
+}
+{% endschema %}

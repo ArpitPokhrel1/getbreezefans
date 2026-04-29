@@ -1,0 +1,42 @@
+<header class="bp-header" data-bp-header>
+  <a class="bp-brand" href="{{ routes.root_url }}" aria-label="{{ shop.name }} home">
+    <span aria-hidden="true"></span>
+    {{ section.settings.brand_name | default: shop.name }}
+  </a>
+
+  <nav class="bp-nav" aria-label="Main navigation">
+    {% if section.settings.menu != blank %}
+      {% for link in section.settings.menu.links %}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {% endfor %}
+    {% else %}
+      <a href="{{ routes.root_url }}#shop">Shop</a>
+      <a href="{{ routes.root_url }}#moments">Moments</a>
+      <a href="{{ routes.cart_url }}">Cart</a>
+    {% endif %}
+  </nav>
+
+  <a class="bp-cart-link" href="{{ routes.cart_url }}" aria-label="Cart">
+    Cart
+    <span>{{ cart.item_count }}</span>
+  </a>
+</header>
+
+{% schema %}
+{
+  "name": "BreezePod header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Brand name",
+      "default": "BreezePod"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu"
+    }
+  ]
+}
+{% endschema %}

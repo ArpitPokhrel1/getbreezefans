@@ -1,0 +1,49 @@
+<section class="bp-cart">
+  <div class="bp-section-heading">
+    <span class="bp-eyebrow">Cart</span>
+    <h1>Your summer comfort order</h1>
+  </div>
+
+  {% if cart.item_count > 0 %}
+    <form action="{{ routes.cart_url }}" method="post" class="bp-cart-form">
+      <div class="bp-cart-items">
+        {% for item in cart.items %}
+          <article class="bp-cart-item">
+            {% if item.image %}
+              {{ item.image | image_url: width: 220 | image_tag: loading: 'lazy', alt: item.product.title }}
+            {% endif %}
+            <div>
+              <a href="{{ item.url }}">{{ item.product.title }}</a>
+              <span>{{ item.variant.title }}</span>
+              <label>
+                Quantity
+                <input type="number" name="updates[]" value="{{ item.quantity }}" min="0">
+              </label>
+            </div>
+            <strong>{{ item.final_line_price | money }}</strong>
+          </article>
+        {% endfor %}
+      </div>
+
+      <div class="bp-cart-summary">
+        <p>Subtotal <strong>{{ cart.total_price | money }}</strong></p>
+        <small>Taxes and shipping calculated at checkout.</small>
+        <div class="bp-cart-actions">
+          <button class="bp-button bp-button--secondary" type="submit">Update cart</button>
+          <button class="bp-button bp-button--primary" type="submit" name="checkout">Checkout</button>
+        </div>
+      </div>
+    </form>
+  {% else %}
+    <div class="bp-empty-cart">
+      <p>Your cart is empty.</p>
+      <a class="bp-button bp-button--primary" href="{{ routes.root_url }}#shop">Shop the collection</a>
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Cart items"
+}
+{% endschema %}

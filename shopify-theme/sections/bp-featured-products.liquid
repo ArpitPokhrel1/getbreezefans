@@ -1,0 +1,60 @@
+{% liquid
+  assign first_product = section.settings.first_product
+  assign second_product = section.settings.second_product
+%}
+
+<section class="bp-featured-products" id="shop">
+  <div class="bp-section-heading">
+    <span class="bp-eyebrow">{{ section.settings.eyebrow }}</span>
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.copy }}</p>
+  </div>
+
+  <div class="bp-product-grid">
+    {% render 'bp-product-card', product: first_product, fallback_image: 'portable-turbo-fan-main.webp', fallback_title: 'Portable Turbo Handheld and Neck Fan', fallback_copy: 'Pocket airflow for commutes, lines, sidelines, and hot travel days.', fallback_price: '$29.99' %}
+    {% render 'bp-product-card', product: second_product, fallback_image: 'cooling-blanket-chair.jpg', fallback_title: 'Lightweight Summer Cooling Blanket', fallback_copy: 'A lighter layer for warm bedrooms, couch naps, guest rooms, and travel.', fallback_price: '$44.99' %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BreezePod featured products",
+  "tag": "section",
+  "class": "bp-section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "first_product",
+      "label": "First product"
+    },
+    {
+      "type": "product",
+      "id": "second_product",
+      "label": "Second product"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Launch collection"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Two products, one summer comfort story."
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "The fan earns the impulse buy. The blanket increases order value without stretching the brand into random gadgets."
+    }
+  ],
+  "presets": [
+    {
+      "name": "BreezePod featured products"
+    }
+  ]
+}
+{% endschema %}

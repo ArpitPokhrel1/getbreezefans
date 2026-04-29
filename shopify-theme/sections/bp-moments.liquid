@@ -1,0 +1,129 @@
+<section class="bp-moments" id="moments">
+  <div class="bp-section-heading">
+    <span class="bp-eyebrow">{{ section.settings.eyebrow }}</span>
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.copy }}</p>
+  </div>
+
+  <div class="bp-moment-grid">
+    {% for block in section.blocks %}
+      <article class="bp-moment-card" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          {{ block.settings.image | image_url: width: 760 | image_tag: loading: 'lazy', sizes: '(max-width: 800px) 100vw, 25vw', alt: block.settings.title }}
+        {% else %}
+          {% assign fallback = 'portable-turbo-fan-main.webp' %}
+          {% if forloop.index > 2 %}
+            {% assign fallback = 'cooling-blanket-chair.jpg' %}
+          {% endif %}
+          <img src="{{ fallback | asset_url }}" alt="{{ block.settings.title }}" loading="lazy">
+        {% endif %}
+        <div>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.copy }}</p>
+          {% if block.settings.link != blank %}
+            <a href="{{ block.settings.link }}">{{ block.settings.link_label }}</a>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BreezePod moments",
+  "tag": "section",
+  "class": "bp-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Shop by moment"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Make the use case obvious before the customer compares prices."
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "Customers buy faster when the store reflects their actual summer routine."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "moment",
+      "name": "Moment",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Hot commute"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "A compact fan for train platforms, parking lots, walks, and errands."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label",
+          "default": "Shop this moment"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "BreezePod moments",
+      "blocks": [
+        {
+          "type": "moment",
+          "settings": {
+            "title": "Hot commute",
+            "copy": "A compact fan for train platforms, parking lots, walks, and errands."
+          }
+        },
+        {
+          "type": "moment",
+          "settings": {
+            "title": "Desk or patio",
+            "copy": "Personal airflow close by without setting up a full-size fan."
+          }
+        },
+        {
+          "type": "moment",
+          "settings": {
+            "title": "Warm bedroom",
+            "copy": "A lighter layer when a comforter feels too heavy for summer."
+          }
+        },
+        {
+          "type": "moment",
+          "settings": {
+            "title": "Guest room reset",
+            "copy": "An easy seasonal add-on for visitors, dorms, and couch naps."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

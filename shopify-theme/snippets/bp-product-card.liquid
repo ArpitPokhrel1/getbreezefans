@@ -1,0 +1,41 @@
+<article class="bp-product-card">
+  <a class="bp-product-card__media" href="{% if product != blank %}{{ product.url }}{% else %}#shop{% endif %}">
+    {% if product.featured_image != blank %}
+      {% assign product_image_alt = product.featured_image.alt | default: product.title %}
+      {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(max-width: 800px) 100vw, 42vw', alt: product_image_alt }}
+    {% else %}
+      <img src="{{ fallback_image | asset_url }}" alt="{{ fallback_title }}" loading="lazy">
+    {% endif %}
+  </a>
+
+  <div class="bp-product-card__body">
+    <span class="bp-product-card__category">Summer comfort</span>
+    <h3>{{ product.title | default: fallback_title }}</h3>
+    <p>
+      {% if product != blank and product.description != blank %}
+        {{ product.description | strip_html | truncate: 116 }}
+      {% else %}
+        {{ fallback_copy }}
+      {% endif %}
+    </p>
+    <div class="bp-product-card__footer">
+      <strong>
+        {% if product != blank %}
+          {{ product.price | money }}
+        {% else %}
+          {{ fallback_price }}
+        {% endif %}
+      </strong>
+      <a href="{% if product != blank %}{{ product.url }}{% else %}#shop{% endif %}">View details</a>
+    </div>
+  </div>
+
+  {% if product != blank %}
+    {% form 'product', product, class: 'bp-card-form' %}
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      <button class="bp-button bp-button--primary" type="submit" {% unless product.available %}disabled{% endunless %}>
+        {% if product.available %}Add to cart{% else %}Sold out{% endif %}
+      </button>
+    {% endform %}
+  {% endif %}
+</article>

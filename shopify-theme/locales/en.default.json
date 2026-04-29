@@ -1,0 +1,15 @@
+{
+  "general": {
+    "cart": "Cart",
+    "search": "Search",
+    "checkout": "Checkout"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "quantity": "Quantity",
+      "variant": "Product option"
+    }
+  }
+}

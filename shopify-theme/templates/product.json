@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "bp-product-main",
+      "settings": {}
+    },
+    "moments": {
+      "type": "bp-moments",
+      "settings": {}
+    },
+    "proof": {
+      "type": "bp-proof",
+      "settings": {}
+    }
+  },
+  "order": ["main", "moments", "proof"]
+}

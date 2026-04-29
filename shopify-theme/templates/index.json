@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "hero": {
+      "type": "bp-hero",
+      "settings": {}
+    },
+    "featured_products": {
+      "type": "bp-featured-products",
+      "settings": {}
+    },
+    "moments": {
+      "type": "bp-moments",
+      "settings": {}
+    },
+    "proof": {
+      "type": "bp-proof",
+      "settings": {}
+    }
+  },
+  "order": ["hero", "featured_products", "moments", "proof"]
+}

@@ -1,0 +1,118 @@
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign fallback_fan = 'portable-turbo-fan-main.webp'
+  assign fallback_blanket = 'cooling-blanket-chair.jpg'
+  assign fallback_image = fallback_fan
+
+  if product.title contains 'Blanket' or product.type contains 'Blanket'
+    assign fallback_image = fallback_blanket
+  endif
+
+  assign featured_alt = product.featured_image.alt | default: product.title
+%}
+
+<section class="bp-product-main" id="bp-specs">
+  <div class="bp-product-gallery">
+    <div class="bp-product-gallery__main">
+      {% if product.featured_image != blank %}
+        {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'eager', sizes: '(max-width: 900px) 100vw, 52vw', alt: featured_alt }}
+      {% else %}
+        <img src="{{ fallback_image | asset_url }}" alt="{{ product.title }}" loading="eager">
+      {% endif %}
+    </div>
+    <div class="bp-product-gallery__rail">
+      {% for image in product.images limit: 4 %}
+        {% assign image_alt = image.alt | default: product.title %}
+        {{ image | image_url: width: 280 | image_tag: loading: 'lazy', sizes: '140px', alt: image_alt }}
+      {% else %}
+        <img src="{{ fallback_image | asset_url }}" alt="{{ product.title }}">
+        <img src="{{ 'portable-turbo-fan-detail.webp' | asset_url }}" alt="Product detail">
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="bp-product-panel">
+    <span class="bp-eyebrow">{{ section.settings.eyebrow }}</span>
+    <h1>{{ product.title }}</h1>
+    <p class="bp-product-description">{{ product.description | strip_html | truncate: 260 }}</p>
+
+    <div class="bp-product-price">
+      {% render 'bp-price', product: product %}
+    </div>
+
+    {% form 'product', product, class: 'bp-buy-form', data-product-form: '' %}
+      <input type="hidden" name="id" value="{{ current_variant.id }}" data-bp-variant-id>
+
+      {% unless product.has_only_default_variant %}
+        <fieldset class="bp-variant-fieldset">
+          <legend>{{ 'products.product.variant' | t }}</legend>
+          {% for variant in product.variants %}
+            <label class="bp-variant-choice{% if variant.id == current_variant.id %} is-selected{% endif %}{% unless variant.available %} is-disabled{% endunless %}">
+              <input
+                type="radio"
+                name="bp_variant_choice"
+                value="{{ variant.id }}"
+                data-price="{{ variant.price | money }}"
+                data-compare-price="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money }}{% endif %}"
+                {% if variant.id == current_variant.id %}checked{% endif %}
+                {% unless variant.available %}disabled{% endunless %}
+              >
+              <span>
+                <strong>{{ variant.title }}</strong>
+                {% if variant.sku != blank %}
+                  <small>{{ variant.sku }}</small>
+                {% endif %}
+              </span>
+              <span>{{ variant.price | money }}</span>
+            </label>
+          {% endfor %}
+        </fieldset>
+      {% endunless %}
+
+      <label class="bp-quantity">
+        <span>{{ 'products.product.quantity' | t }}</span>
+        <input type="number" name="quantity" value="1" min="1">
+      </label>
+
+      <button class="bp-button bp-button--primary bp-add-button" type="submit" {% unless current_variant.available %}disabled{% endunless %}>
+        {% if current_variant.available %}
+          {{ 'products.product.add_to_cart' | t }}
+        {% else %}
+          {{ 'products.product.sold_out' | t }}
+        {% endif %}
+      </button>
+
+      {% if section.settings.show_dynamic_checkout %}
+        {{ form | payment_button }}
+      {% endif %}
+    {% endform %}
+
+    <div class="bp-checkout-notes">
+      <p>Tracked U.S. delivery details are shown at checkout.</p>
+      <p>Covered by a 10-day money-back guarantee for inspection after delivery.</p>
+      <p>This product is for personal comfort and does not replace air conditioning, hydration, shade, or medical guidance.</p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BreezePod product",
+  "tag": "section",
+  "class": "bp-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Secure checkout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout button",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

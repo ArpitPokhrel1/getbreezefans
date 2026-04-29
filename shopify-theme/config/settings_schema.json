@@ -1,0 +1,21 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "BreezePod Premium",
+    "theme_version": "1.0.0",
+    "theme_author": "BreezePod",
+    "theme_documentation_url": "https://shopify.dev/docs/storefronts/themes",
+    "theme_support_url": "https://getbreezefans.vercel.app"
+  },
+  {
+    "name": "BreezePod",
+    "settings": [
+      {
+        "type": "text",
+        "id": "checkout_note",
+        "label": "Checkout note",
+        "default": "Secure checkout. Tracked U.S. delivery. 10-day money-back guarantee."
+      }
+    ]
+  }
+]
