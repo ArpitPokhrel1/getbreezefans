@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  phone     String?
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id                    String      @id @default(cuid())
+  orderNumber           String      @unique
+  customerId            String?
+  customer              Customer?   @relation(fields: [customerId], references: [id])
+  status                OrderStatus @default(PENDING_PAYMENT)
+  stripeCheckoutSession String?     @unique
+  stripePaymentIntent   String?
+  cjOrderId             String?
+  cjStatus              String?
+  subtotalCents         Int
+  shippingCents         Int         @default(0)
+  taxCents              Int         @default(0)
+  totalCents            Int
+  currency              String      @default("usd")
+  items                 OrderItem[]
+  shipping              ShippingAddress?
+  fulfillmentEvents     FulfillmentEvent[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+
+model OrderItem {
+  id          String @id @default(cuid())
+  orderId     String
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  variantId   String
+  title       String
+  quantity    Int
+  unitCents   Int
+  totalCents  Int
+  cjProductId String?
+  cjVariantId String?
+  cjSku       String?
+}
+
+model ShippingAddress {
+  id          String @id @default(cuid())
+  orderId     String @unique
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  name        String
+  line1       String
+  line2       String?
+  city        String
+  state       String
+  postalCode  String
+  countryCode String @default("US")
+  phone       String?
+}
+
+model FulfillmentEvent {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider    String
+  status      String
+  requestJson String?
+  responseJson String?
+  message     String?
+  createdAt   DateTime @default(now())
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  FULFILLMENT_PENDING
+  FULFILLMENT_SUBMITTED
+  FULFILLMENT_FAILED
+  SHIPPED
+  CANCELLED
+  REFUNDED
+}
