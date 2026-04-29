@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { portableFan } from "@/data/product";
 import { prisma } from "@/lib/db";
 import { env } from "@/lib/env";
+import { getSiteUrl } from "@/lib/site-url";
 import { getStripe } from "@/lib/stripe";
 import { checkoutRequestSchema, createOrderNumber, getCheckoutVariant } from "@/server/checkout";
 
@@ -55,10 +56,11 @@ export async function POST(request: Request) {
     });
 
     const stripe = getStripe();
+    const siteUrl = getSiteUrl();
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      success_url: `${env.NEXT_PUBLIC_SITE_URL}/product/${portableFan.slug}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${env.NEXT_PUBLIC_SITE_URL}/product/${portableFan.slug}?checkout=cancelled`,
+      success_url: `${siteUrl}/product/${portableFan.slug}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/product/${portableFan.slug}?checkout=cancelled`,
       shipping_address_collection: {
         allowed_countries: ["US"]
       },

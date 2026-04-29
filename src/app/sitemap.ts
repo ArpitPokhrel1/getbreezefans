@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 import { pageBriefs } from "@/data/seo";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+import { getSiteUrl } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const siteUrl = getSiteUrl();
   const staticUrls = ["/", ...pageBriefs.map((page) => page.url)];
   const uniqueUrls = Array.from(new Set(staticUrls));
 
@@ -15,4 +15,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: url === "/" ? 1 : url.startsWith("/product/") ? 0.9 : 0.7
   }));
 }
-
