@@ -1,17 +1,24 @@
 "use client";
 
-import { Minus, Plus, ShoppingBag } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Store } from "lucide-react";
 import { useMemo, useState } from "react";
-import { portableFan } from "@/data/product";
+import type { Product } from "@/data/product";
 import { formatMoney } from "@/lib/money";
 
-export function VariantCheckoutForm() {
-  const [variantId, setVariantId] = useState(portableFan.variants[1]?.id ?? portableFan.variants[0].id);
+type VariantCheckoutFormProps = {
+  product: Product;
+  compact?: boolean;
+};
+
+export function VariantCheckoutForm({ product, compact = false }: VariantCheckoutFormProps) {
+  const [variantId, setVariantId] = useState(product.defaultVariantId);
   const [quantity, setQuantity] = useState(1);
+  const shopifyUrl = process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL;
+  const quantityId = `checkout-quantity-${product.id}${compact ? "-compact" : ""}`;
 
   const selectedVariant = useMemo(
-    () => portableFan.variants.find((variant) => variant.id === variantId) ?? portableFan.variants[0],
-    [variantId]
+    () => product.variants.find((variant) => variant.id === variantId) ?? product.variants[0],
+    [product.variants, variantId]
   );
 
   const savings =
@@ -20,15 +27,15 @@ export function VariantCheckoutForm() {
       : 0;
 
   return (
-    <form className="buy-panel" action="/api/checkout" method="post">
-      <input type="hidden" name="productId" value={portableFan.id} />
+    <form className={`buy-panel${compact ? " buy-panel--compact" : ""}`} action="/api/checkout" method="post">
+      <input type="hidden" name="productId" value={product.id} />
       <input type="hidden" name="variantId" value={selectedVariant.id} />
       <input type="hidden" name="quantity" value={quantity} />
 
       <div className="buy-panel__head">
         <div>
-          <span className="eyebrow">Summer-ready stock</span>
-          <h2>Choose your pack</h2>
+          <span className="eyebrow">Secure checkout</span>
+          <h2>{compact ? "Choose option" : product.shortTitle}</h2>
         </div>
         <div className="price-lockup" aria-live="polite">
           <strong>{formatMoney(selectedVariant.priceCents)}</strong>
@@ -37,8 +44,8 @@ export function VariantCheckoutForm() {
       </div>
 
       <fieldset className="variant-group">
-        <legend>Pack option</legend>
-        {portableFan.variants.map((variant) => {
+        <legend>Product option</legend>
+        {product.variants.map((variant) => {
           const checked = variant.id === selectedVariant.id;
           const perFan = variant.priceCents / variant.quantity;
 
@@ -53,11 +60,11 @@ export function VariantCheckoutForm() {
               />
               <span>
                 <strong>{variant.label}</strong>
-                <small>{variant.color}</small>
+                <small>{variant.size ? `${variant.color} - ${variant.size}` : variant.color}</small>
               </span>
               <span className="variant-choice__price">
                 {formatMoney(variant.priceCents)}
-                <small>{formatMoney(perFan)} each</small>
+                {variant.quantity > 1 ? <small>{formatMoney(perFan)} each</small> : null}
               </span>
             </label>
           );
@@ -65,7 +72,7 @@ export function VariantCheckoutForm() {
       </fieldset>
 
       <div className="quantity-row">
-        <label htmlFor="checkout-quantity">Order quantity</label>
+        <label htmlFor={quantityId}>Order quantity</label>
         <div className="stepper">
           <button
             type="button"
@@ -74,7 +81,7 @@ export function VariantCheckoutForm() {
           >
             <Minus size={16} aria-hidden="true" />
           </button>
-          <output id="checkout-quantity" aria-live="polite">
+          <output id={quantityId} aria-live="polite">
             {quantity}
           </output>
           <button
@@ -87,13 +94,22 @@ export function VariantCheckoutForm() {
         </div>
       </div>
 
-      {savings ? <p className="savings">You save {formatMoney(savings)} on this pack.</p> : null}
+      {savings ? <p className="savings">Launch price: {formatMoney(savings)} below compare-at.</p> : null}
 
       <button className="checkout-button" type="submit">
         <ShoppingBag size={19} aria-hidden="true" />
-        Checkout securely
+        Checkout with Stripe
       </button>
-      <p className="checkout-note">Ships to U.S. addresses. Taxes and final delivery options are shown at checkout.</p>
+      {shopifyUrl ? (
+        <a className="shopify-link" href={shopifyUrl} target="_blank" rel="noreferrer">
+          <Store size={17} aria-hidden="true" />
+          View Shopify store
+        </a>
+      ) : null}
+      <p className="checkout-note">
+        Ships to U.S. addresses. Taxes and final delivery options are shown at checkout. Covered by a 10-day
+        money-back guarantee.
+      </p>
     </form>
   );
 }

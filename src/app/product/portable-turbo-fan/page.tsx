@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   title: portableFan.title,
   description: `Buy the ${portableFan.title} from ${formatMoney(
     portableFan.priceCents
-  )}. Available as a single fan, 2-pack, or 3-pack for U.S. delivery.`
+  )}. Available in black and white fan colors for U.S. delivery.`
 };
 
 export default function PortableTurboFanPage() {
-  return <Storefront page="product" />;
+  return <Storefront page="product" productSlug={portableFan.slug} />;
 }

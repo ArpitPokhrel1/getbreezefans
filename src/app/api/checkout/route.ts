@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-import { portableFan } from "@/data/product";
 import { prisma } from "@/lib/db";
 import { env } from "@/lib/env";
 import { getSiteUrl } from "@/lib/site-url";
 import { getStripe } from "@/lib/stripe";
-import { checkoutRequestSchema, createOrderNumber, getCheckoutVariant } from "@/server/checkout";
+import { checkoutRequestSchema, createOrderNumber, getCheckoutProduct, getCheckoutVariant } from "@/server/checkout";
 
 async function readCheckoutBody(request: Request) {
   const contentType = request.headers.get("content-type") ?? "";
@@ -17,6 +16,7 @@ async function readCheckoutBody(request: Request) {
 
   const formData = await request.formData();
   return {
+    productId: formData.get("productId"),
     variantId: formData.get("variantId"),
     quantity: formData.get("quantity")
   };
@@ -30,7 +30,8 @@ function wantsBrowserRedirect(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = checkoutRequestSchema.parse(await readCheckoutBody(request));
-    const variant = getCheckoutVariant(body.variantId);
+    const product = getCheckoutProduct(body.productId);
+    const variant = getCheckoutVariant(product.id, body.variantId);
     const subtotalCents = variant.priceCents * body.quantity;
 
     const order = await prisma.order.create({
@@ -38,16 +39,16 @@ export async function POST(request: Request) {
         orderNumber: createOrderNumber(),
         subtotalCents,
         totalCents: subtotalCents,
-        currency: portableFan.currency,
+        currency: product.currency,
         items: {
           create: {
-            productId: portableFan.id,
+            productId: product.id,
             variantId: variant.id,
-            title: `${portableFan.title} - ${variant.label}`,
+            title: `${product.title} - ${variant.label}`,
             quantity: variant.quantity * body.quantity,
             unitCents: variant.priceCents,
             totalCents: subtotalCents,
-            cjProductId: portableFan.cjProductId,
+            cjProductId: product.cjProductId,
             cjVariantId: variant.cjVariantId ?? env.CJ_VARIANT_ID,
             cjSku: variant.cjSku ?? env.CJ_VARIANT_SKU
           }
@@ -59,25 +60,26 @@ export async function POST(request: Request) {
     const siteUrl = getSiteUrl();
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      success_url: `${siteUrl}/product/${portableFan.slug}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/product/${portableFan.slug}?checkout=cancelled`,
+      success_url: `${siteUrl}/product/${product.slug}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/product/${product.slug}?checkout=cancelled`,
       shipping_address_collection: {
         allowed_countries: ["US"]
       },
       metadata: {
         orderId: order.id,
+        productId: product.id,
         variantId: variant.id
       },
       line_items: [
         {
           quantity: body.quantity,
           price_data: {
-            currency: portableFan.currency,
+            currency: product.currency,
             unit_amount: variant.priceCents,
             product_data: {
-              name: `${portableFan.shortTitle} - ${variant.label}`,
+              name: `${product.shortTitle} - ${variant.label}`,
               metadata: {
-                productId: portableFan.id,
+                productId: product.id,
                 variantId: variant.id
               }
             }
@@ -105,6 +107,10 @@ export async function POST(request: Request) {
     }
 
     const message = error instanceof Error ? error.message : "Checkout failed";
+    if (message.startsWith("Unknown product")) {
+      return NextResponse.json({ error: message }, { status: 400 });
+    }
+
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

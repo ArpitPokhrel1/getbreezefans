@@ -1,95 +1,103 @@
 import {
   BatteryCharging,
+  BedDouble,
   CheckCircle2,
   Clock3,
+  Droplets,
   Fan,
   PackageCheck,
   Plane,
   ShieldCheck,
-  Sparkles,
   Truck
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { portableFan } from "@/data/product";
+import { coolingBlanket, getProduct, portableFan, products, type Product } from "@/data/product";
 import { formatMoney } from "@/lib/money";
-import { ProductIllustration } from "./ProductIllustration";
 import { VariantCheckoutForm } from "./VariantCheckoutForm";
 
 type StorefrontProps = {
   page: "home" | "product";
+  productSlug?: string;
 };
 
 const trustItems = [
   { icon: ShieldCheck, label: "Secure checkout" },
   { icon: Truck, label: "U.S. delivery" },
-  { icon: PackageCheck, label: "30-day returns" },
+  { icon: PackageCheck, label: "10-day guarantee" },
   { icon: CheckCircle2, label: "Tracked orders" }
 ];
 
 const faqs = [
   {
-    question: "Can I use it hands-free?",
-    answer: "Yes. The compact body works handheld, on a desk, or with a lanyard for neck-style carry."
+    question: "Is BreezePod a Shopify store too?",
+    answer:
+      "The storefront can link to Shopify through NEXT_PUBLIC_SHOPIFY_STORE_URL. Stripe checkout remains available in this app while Shopify is configured."
   },
   {
-    question: "Is this an air conditioner?",
-    answer: "No. It is a portable fan designed to move air nearby. It does not chill a room or replace medical cooling."
+    question: "What does the 10-day money-back guarantee cover?",
+    answer:
+      "Customers have 10 days from delivery to inspect the product. Unused items and verified defects can be returned under the posted policy."
   },
   {
-    question: "Where do you ship?",
-    answer: "This storefront is built for customers in the United States, with tracked delivery details shown at checkout."
+    question: "Are these medical cooling products?",
+    answer:
+      "No. The fan moves air nearby and the blanket is a passive lightweight textile. Neither product replaces AC, hydration, shade, or medical guidance."
   },
   {
-    question: "What is your return policy?",
-    answer: "Unused or defective items can be returned within 30 days. Keep the packaging until you know the fan is right for you."
+    question: "Why sell a fan and blanket together?",
+    answer:
+      "They solve different parts of summer discomfort: personal airflow outside the home and lighter bedding inside the home."
   }
 ];
 
-export function Storefront({ page }: StorefrontProps) {
+export function Storefront({ page, productSlug = "portable-turbo-fan" }: StorefrontProps) {
   const isProductPage = page === "product";
+  const activeProduct = getProduct(productSlug);
+  const heroProduct = isProductPage ? activeProduct : portableFan;
+  const secondaryProduct = heroProduct.id === portableFan.id ? coolingBlanket : portableFan;
+  const shopifyUrl = process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL;
 
   return (
     <main>
+      <AnnouncementBar />
       <Header />
+      <MobileBuyBar product={heroProduct} />
       <section className="hero-section" id="top">
         <div className="hero-copy">
-          <span className="eyebrow">Portable cooling for U.S. summer days</span>
-          <h1>{portableFan.title}</h1>
-          <p>
-            A rechargeable personal fan for commutes, sports sidelines, theme parks, warehouse shifts, and travel days
-            when still air gets uncomfortable.
-          </p>
+          <span className="eyebrow">Summer comfort, built for real routines</span>
+          <h1>{isProductPage ? heroProduct.title : "Cooler commutes. Lighter nights."}</h1>
+          <p>{isProductPage ? heroProduct.description : "BreezePod pairs a real portable neck fan with a lightweight cooling blanket so customers can solve the two summer moments they actually complain about: moving through heat and trying to rest in it."}</p>
           <div className="hero-actions">
             <a className="primary-link" href="#buy">
-              Buy from {formatMoney(portableFan.priceCents)}
+              Shop from {formatMoney(heroProduct.priceCents)}
             </a>
-            {!isProductPage ? (
-              <Link className="secondary-link" href="/product/portable-turbo-fan">
-                View product details
-              </Link>
-            ) : (
-              <a className="secondary-link" href="#specs">
-                See specs
+            <a className="secondary-link" href="#specs">
+              See specifications
+            </a>
+            {shopifyUrl ? (
+              <a className="secondary-link" href={shopifyUrl} target="_blank" rel="noreferrer">
+                Shopify store
               </a>
-            )}
+            ) : null}
           </div>
           <div className="hero-metrics" aria-label="Product highlights">
             <span>
-              <strong>5</strong>
-              speeds
+              <strong>US</strong>
+              tracked delivery
             </span>
             <span>
-              <strong>USB</strong>
-              rechargeable
+              <strong>10</strong>
+              day inspection
             </span>
             <span>
-              <strong>3</strong>
-              pack options
+              <strong>Stripe</strong>
+              secure checkout
             </span>
           </div>
         </div>
         <div className="hero-media">
-          <ProductIllustration />
+          <ProductMedia product={heroProduct} />
         </div>
       </section>
 
@@ -102,14 +110,29 @@ export function Storefront({ page }: StorefrontProps) {
         ))}
       </section>
 
+      {!isProductPage ? (
+        <section className="collection-section" id="shop">
+          <div className="section-heading section-heading--wide">
+            <span className="eyebrow">Launch collection</span>
+            <h2>Two products, one summer comfort story.</h2>
+            <p>
+              The fan earns the impulse buy. The blanket increases order value without stretching the brand into random
+              gadgets.
+            </p>
+          </div>
+          <div className="product-grid">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="purchase-section" id="buy">
         <div className="purchase-copy">
-          <span className="eyebrow">Pack pricing</span>
-          <h2>One for your bag, extras for the people who borrow yours.</h2>
-          <p>
-            Start with a single fan or lower the per-fan cost with a 2-pack or 3-pack. Every option uses the same Carbon
-            Black fan body.
-          </p>
+          <span className="eyebrow">Checkout</span>
+          <h2>{isProductPage ? activeProduct.tagline : "Choose the product that matches the moment."}</h2>
+          <p>{isProductPage ? activeProduct.description : "Customers do not need a giant sale to believe a summer problem exists. Keep pricing credible, explain the tradeoffs, and let the 10-day guarantee reduce hesitation."}</p>
           <div className="mini-policies">
             <p>
               <Truck size={18} aria-hidden="true" />
@@ -117,21 +140,21 @@ export function Storefront({ page }: StorefrontProps) {
             </p>
             <p>
               <ShieldCheck size={18} aria-hidden="true" />
-              Checkout posts directly to the secure order endpoint.
+              Stripe checkout is active; Shopify link is configurable.
             </p>
           </div>
         </div>
-        <VariantCheckoutForm />
+        <VariantCheckoutForm product={activeProduct} />
       </section>
 
       <section className="benefits-section">
         <div className="section-heading">
-          <span className="eyebrow">Why it works</span>
-          <h2>Small enough to carry. Strong enough to matter.</h2>
+          <span className="eyebrow">Why buyers say yes</span>
+          <h2>Specific use cases beat generic summer hype.</h2>
         </div>
         <div className="benefit-grid">
-          {portableFan.benefits.map((benefit, index) => {
-            const icons = [Fan, BatteryCharging, Clock3, Sparkles];
+          {activeProduct.benefits.map((benefit, index) => {
+            const icons = [Fan, BatteryCharging, Clock3, Droplets];
             const Icon = icons[index % icons.length];
             return (
               <article key={benefit}>
@@ -146,11 +169,42 @@ export function Storefront({ page }: StorefrontProps) {
       <section className="use-section">
         <div>
           <span className="eyebrow">Use cases</span>
-          <h2>Built for the hot parts of ordinary days.</h2>
+          <h2>{activeProduct.category === "fan" ? "For the hot parts of ordinary days." : "For warm rooms and lighter sleep setups."}</h2>
         </div>
         <div className="use-list">
-          {portableFan.useCases.map((useCase) => (
+          {activeProduct.useCases.map((useCase) => (
             <span key={useCase}>{useCase}</span>
+          ))}
+        </div>
+      </section>
+
+      <section className="moment-section">
+        <div className="section-heading section-heading--wide">
+          <span className="eyebrow">Shop by moment</span>
+          <h2>Make the use case obvious before the customer compares prices.</h2>
+        </div>
+        <div className="moment-grid">
+          {[
+            { title: "Hot commute", copy: "A compact fan for train platforms, parking lots, walks, and errands.", product: portableFan },
+            { title: "Desk or patio", copy: "Personal airflow close by without setting up a full-size fan.", product: portableFan },
+            { title: "Warm bedroom", copy: "A lighter layer when a comforter feels too heavy for summer.", product: coolingBlanket },
+            { title: "Guest room reset", copy: "An easy seasonal add-on for visitors, dorms, and couch naps.", product: coolingBlanket }
+          ].map((moment) => (
+            <article key={moment.title} className="moment-card">
+              <Image
+                src={moment.product.images[0].src}
+                alt={moment.product.images[0].alt}
+                width={520}
+                height={420}
+                unoptimized
+                sizes="(max-width: 800px) 100vw, 25vw"
+              />
+              <div>
+                <h3>{moment.title}</h3>
+                <p>{moment.copy}</p>
+                <Link href={`/product/${moment.product.slug}`}>{moment.product.shortTitle}</Link>
+              </div>
+            </article>
           ))}
         </div>
       </section>
@@ -158,9 +212,9 @@ export function Storefront({ page }: StorefrontProps) {
       <section className="details-section" id="specs">
         <div className="specs-block">
           <span className="eyebrow">Specs</span>
-          <h2>What is included in the design</h2>
+          <h2>Detailed specifications</h2>
           <dl>
-            {portableFan.specs.map((spec) => (
+            {activeProduct.specs.map((spec) => (
               <div key={spec.label}>
                 <dt>{spec.label}</dt>
                 <dd>{spec.value}</dd>
@@ -170,16 +224,65 @@ export function Storefront({ page }: StorefrontProps) {
         </div>
         <div className="shipping-block">
           <Plane size={24} aria-hidden="true" />
-          <h2>Shipping and returns</h2>
+          <h2>10-day guarantee</h2>
           <p>
             Orders are intended for U.S. delivery with tracking. Delivery windows, taxes, and shipping options are
             confirmed at checkout before payment.
           </p>
           <p>
-            Returns are accepted within 30 days for unused items or verified defects. This product is a fan, not a
-            medical device or air conditioner.
+            The guarantee gives customers 10 days from delivery to inspect product feel, color, size, and condition.
+            It does not cover misuse or normal preference changes after use.
           </p>
         </div>
+      </section>
+
+      <section className="proof-section">
+        <div className="section-heading">
+          <span className="eyebrow">Why it feels credible</span>
+          <h2>Honest product pages convert better than oversized promises.</h2>
+        </div>
+        <div className="proof-grid">
+          <article>
+            <strong>Real specifications</strong>
+            <p>Color, sizing, use cases, care expectations, and supplier verification notes are written plainly.</p>
+          </article>
+          <article>
+            <strong>Clear limits</strong>
+            <p>The fan is personal airflow and the blanket is a passive textile layer, not medical cooling equipment.</p>
+          </article>
+          <article>
+            <strong>Checkout trust</strong>
+            <p>Stripe checkout, U.S. delivery focus, tracked orders, and the 10-day inspection window sit close to purchase.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="spec-matrix">
+        {activeProduct.detailedSpecs.map((group) => (
+          <article key={group.group}>
+            <h3>{group.group}</h3>
+            <dl>
+              {group.items.map((item) => (
+                <div key={item.label}>
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </article>
+        ))}
+      </section>
+
+      <section className="cross-sell-section">
+        <div>
+          <span className="eyebrow">Complete the summer kit</span>
+          <h2>{secondaryProduct.title}</h2>
+          <p>{secondaryProduct.description}</p>
+          <Link className="secondary-link" href={`/product/${secondaryProduct.slug}`}>
+            View {secondaryProduct.category === "fan" ? "fan" : "blanket"}
+          </Link>
+        </div>
+        <ProductCard product={secondaryProduct} compact />
       </section>
 
       <section className="faq-section">
@@ -199,9 +302,19 @@ export function Storefront({ page }: StorefrontProps) {
 
       <footer className="site-footer">
         <strong>BreezePod</strong>
-        <span>Portable cooling for customers in the United States.</span>
+        <span>Professional summer comfort products for customers in the United States.</span>
       </footer>
     </main>
+  );
+}
+
+function AnnouncementBar() {
+  return (
+    <div className="announcement-bar">
+      <span>Tracked delivery</span>
+      <span>10-day guarantee</span>
+      <span>Secure Stripe checkout</span>
+    </div>
   );
 }
 
@@ -213,10 +326,88 @@ function Header() {
         BreezePod
       </Link>
       <nav aria-label="Main navigation">
-        <a href="#buy">Shop</a>
+        <a href="/#shop">Shop</a>
         <a href="#specs">Specs</a>
         <Link href="/product/portable-turbo-fan">Product</Link>
       </nav>
     </header>
+  );
+}
+
+function MobileBuyBar({ product }: { product: Product }) {
+  return (
+    <aside className="mobile-buy-bar" aria-label="Quick checkout">
+      <div>
+        <strong>{product.shortTitle}</strong>
+        <span>From {formatMoney(product.priceCents)}</span>
+      </div>
+      <a href="#buy">Shop now</a>
+    </aside>
+  );
+}
+
+function ProductMedia({ product }: { product: Product }) {
+  const [primary, secondary, tertiary] = product.images;
+
+  return (
+    <div className="photo-board">
+      <div className="photo-board__main">
+        <Image
+          src={primary.src}
+          alt={primary.alt}
+          width={860}
+          height={860}
+          priority
+          unoptimized
+          sizes="(max-width: 900px) 100vw, 48vw"
+        />
+      </div>
+      <div className="photo-board__caption">
+        <strong>{product.shortTitle}</strong>
+        <span>{product.tagline}</span>
+      </div>
+      {secondary ? (
+        <div className="photo-board__mini photo-board__mini--top">
+          <Image src={secondary.src} alt={secondary.alt} width={420} height={420} unoptimized sizes="180px" />
+        </div>
+      ) : null}
+      {tertiary ? (
+        <div className="photo-board__mini photo-board__mini--bottom">
+          <Image src={tertiary.src} alt={tertiary.alt} width={420} height={420} unoptimized sizes="180px" />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function ProductCard({ product, compact = false }: { product: Product; compact?: boolean }) {
+  const Icon = product.category === "fan" ? Fan : BedDouble;
+
+  return (
+    <article className={`product-card${compact ? " product-card--compact" : ""}`}>
+      <Link href={`/product/${product.slug}`} className="product-card__media" aria-label={`View ${product.title}`}>
+        <Image
+          src={product.images[0].src}
+          alt={product.images[0].alt}
+          width={720}
+          height={720}
+          unoptimized
+          sizes="(max-width: 800px) 100vw, 42vw"
+        />
+      </Link>
+      <div className="product-card__body">
+        <span className="product-card__category">
+          <Icon size={17} aria-hidden="true" />
+          {product.category === "fan" ? "Neck fan" : "Cooling blanket"}
+        </span>
+        <h3>{product.title}</h3>
+        <p>{product.tagline}</p>
+        <div className="product-card__footer">
+          <strong>{formatMoney(product.priceCents)}</strong>
+          <Link href={`/product/${product.slug}`}>View details</Link>
+        </div>
+      </div>
+      {!compact ? <VariantCheckoutForm product={product} compact /> : null}
+    </article>
   );
 }

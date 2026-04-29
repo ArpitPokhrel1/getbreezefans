@@ -5,26 +5,39 @@ import { checkoutRequestSchema, getCheckoutVariant } from "../src/server/checkou
 describe("checkout validation", () => {
   it("accepts a known variant and positive quantity", () => {
     const parsed = checkoutRequestSchema.parse({
-      variantId: "two-pack",
+      productId: "portable-turbo-fan",
+      variantId: "fan-black-white-pair",
       quantity: 2
     });
 
-    expect(parsed).toEqual({ variantId: "two-pack", quantity: 2 });
-    expect(getCheckoutVariant(parsed.variantId).id).toBe("two-pack");
+    expect(parsed).toEqual({ productId: "portable-turbo-fan", variantId: "fan-black-white-pair", quantity: 2 });
+    expect(getCheckoutVariant(parsed.productId, parsed.variantId).id).toBe("fan-black-white-pair");
   });
 
   it("coerces browser form quantity strings", () => {
     const parsed = checkoutRequestSchema.parse({
-      variantId: "single-black",
+      productId: "portable-turbo-fan",
+      variantId: "fan-black",
       quantity: "3"
     });
 
-    expect(parsed).toEqual({ variantId: "single-black", quantity: 3 });
+    expect(parsed).toEqual({ productId: "portable-turbo-fan", variantId: "fan-black", quantity: 3 });
+  });
+
+  it("accepts cooling blanket variants", () => {
+    const parsed = checkoutRequestSchema.parse({
+      productId: "cooling-blanket",
+      variantId: "blanket-queen-blue",
+      quantity: 1
+    });
+
+    expect(getCheckoutVariant(parsed.productId, parsed.variantId).id).toBe("blanket-queen-blue");
   });
 
   it("rejects unknown variants instead of falling back to a default", () => {
     expect(() =>
       checkoutRequestSchema.parse({
+        productId: "portable-turbo-fan",
         variantId: "not-a-real-variant",
         quantity: 1
       })
@@ -34,7 +47,8 @@ describe("checkout validation", () => {
   it("rejects invalid quantities", () => {
     expect(() =>
       checkoutRequestSchema.parse({
-        variantId: "single-black",
+        productId: "portable-turbo-fan",
+        variantId: "fan-black",
         quantity: 0
       })
     ).toThrow();

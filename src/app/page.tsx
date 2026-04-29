@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Storefront } from "@/components/Storefront";
 
 export const metadata: Metadata = {
-  title: "Portable Turbo Fan for Summer Travel",
+  title: "BreezePod Summer Comfort Shop",
   description:
-    "Shop the BreezePod Portable Turbo Handheld and Neck Fan for U.S. commutes, theme parks, sports days, and hot work shifts."
+    "Shop BreezePod portable neck fans and lightweight cooling blankets for U.S. commutes, travel days, warm rooms, and summer routines."
 };
 
 export default function HomePage() {

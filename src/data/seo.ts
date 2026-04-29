@@ -106,6 +106,15 @@ export const keywordClusters: KeywordCluster[] = [
     audience: "Warehouse, delivery, vendor, and light industrial workers seeking personal comfort during breaks.",
     angle: "Personal comfort tips with strong safety disclaimer: follow employer heat procedures; fan is not PPE.",
     targetUrl: "/blog/portable-fan-summer-use-cases"
+  },
+  {
+    id: "cooling-blanket",
+    primaryKeyword: "cooling blanket",
+    secondaryKeywords: ["summer cooling blanket", "lightweight blanket", "blanket for hot sleepers", "cooling throw blanket"],
+    intent: "commercial",
+    audience: "U.S. shoppers looking for a lighter bedding layer for warm bedrooms, sofas, dorms, and guest rooms.",
+    angle: "Position as a passive lightweight summer layer, not a device that chills rooms or treats sleep issues.",
+    targetUrl: "/product/cooling-blanket"
   }
 ];
 
@@ -114,6 +123,11 @@ export const internalLinkTargets: InternalLinkTarget[] = [
     label: "Portable Turbo Fan product page",
     href: "/product/portable-turbo-fan",
     anchors: ["portable turbo fan", "rechargeable handheld and neck fan", "BreezePod Turbo Fan"]
+  },
+  {
+    label: "Cooling Blanket product page",
+    href: "/product/cooling-blanket",
+    anchors: ["cooling blanket", "lightweight summer blanket", "BreezePod Cooling Blanket"]
   },
   {
     label: "Portable neck fan buying guide",
@@ -165,6 +179,30 @@ export const pageBriefs: PageBrief[] = [
       "Do not guarantee temperature reduction.",
       "Do not imply workplace heat illness protection or medical use.",
       "Verify battery capacity, runtime, charging type, stock, and delivery estimates before publishing final specs."
+    ]
+  },
+  {
+    slug: "cooling-blanket",
+    url: "/product/cooling-blanket",
+    type: "product",
+    title: "Lightweight Summer Cooling Blanket",
+    metaDescription:
+      "Shop a lightweight summer cooling blanket for warm bedrooms, sofas, guest rooms, dorms, and travel with a 10-day guarantee.",
+    h1: "Lightweight Summer Cooling Blanket",
+    primaryKeyword: "cooling blanket",
+    searchIntent: "Ready-to-buy shoppers comparing lighter bedding for warm rooms and summer sleep setups.",
+    outline: [
+      "Hero with product photo, throw and queen options, and realistic passive-cooling positioning",
+      "Use cases: warm bedrooms, couch naps, guest rooms, dorm rooms, road trips",
+      "Specs: sizing, fabric feel, care expectations, and supplier verification notes",
+      "Checkout module with Stripe and Shopify link option",
+      "FAQ and compliance disclaimers"
+    ],
+    internalLinks: ["/product/portable-turbo-fan", "/guides/festival-commute-cooling"],
+    complianceNotes: [
+      "Do not imply active refrigeration or guaranteed body-temperature reduction.",
+      "Avoid medical sleep claims.",
+      "Verify fabric blend, size tolerance, care instructions, stock, and fulfillment route before launch."
     ]
   },
   {
@@ -314,4 +352,3 @@ export const contentCalendar = [
     pages: ["/guides/theme-park-line-fan-guide", "/guides/summer-travel-portable-fan"]
   }
 ];
-

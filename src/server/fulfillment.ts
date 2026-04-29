@@ -1,6 +1,6 @@
 import { OrderStatus, type Prisma } from "@prisma/client";
 
-import { portableFan } from "../data/product";
+import { getProduct } from "../data/product";
 import { createCjOrder, isCjAutoPayEnabled, isCjAutoSubmitEnabled } from "../lib/cj";
 import { prisma } from "../lib/db";
 
@@ -33,7 +33,8 @@ export async function submitCjFulfillment(orderId: string) {
   }
 
   try {
-    const result = await createCjOrder(order, portableFan);
+    const product = getProduct(order.items[0]?.productId);
+    const result = await createCjOrder(order, product);
 
     await prisma.fulfillmentEvent.create({
       data: {

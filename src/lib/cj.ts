@@ -124,6 +124,14 @@ export async function createCjOrder(order: CjOrderForPayload, product: Product) 
     };
   }
 
+  if (!cleanString(product.cjProductId) || product.cjProductId.includes("supplier-pending")) {
+    return {
+      skipped: true,
+      status: "SKIPPED",
+      message: `${product.title} is not mapped to a live CJ product yet`
+    };
+  }
+
   const payload = buildCjCreateOrderPayload(order, product, {
     productId: env.CJ_PRODUCT_ID,
     variantId: env.CJ_VARIANT_ID,
