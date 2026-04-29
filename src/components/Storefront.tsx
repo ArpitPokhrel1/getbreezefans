@@ -128,6 +128,8 @@ export function Storefront({ page, productSlug = "portable-turbo-fan" }: Storefr
         </section>
       ) : null}
 
+      {!isProductPage ? <SculptRitualSection /> : null}
+
       <section className="purchase-section" id="buy">
         <div className="purchase-copy">
           <span className="eyebrow">Checkout</span>
@@ -327,10 +329,34 @@ function Header() {
       </Link>
       <nav aria-label="Main navigation">
         <a href="/#shop">Shop</a>
+        <Link href="/sculpt-ritual">Sculpt Ritual</Link>
         <a href="#specs">Specs</a>
         <Link href="/product/portable-turbo-fan">Product</Link>
       </nav>
     </header>
+  );
+}
+
+function SculptRitualSection() {
+  return (
+    <section className="sculpt-ritual-section" aria-labelledby="sculpt-ritual-heading">
+      <div className="sculpt-ritual-copy">
+        <span className="eyebrow">New beauty vertical</span>
+        <h2 id="sculpt-ritual-heading">A warmer storefront for daily face sculpting.</h2>
+        <p>
+          Sculpt Ritual is a separate premium beauty page for a rose quartz gua sha tool and the Face Sculpting 101
+          digital guide. It keeps the same Vercel site while giving the product its own editorial buying experience.
+        </p>
+        <Link className="primary-link" href="/sculpt-ritual">
+          Visit Sculpt Ritual
+        </Link>
+      </div>
+      <Link className="sculpt-ritual-card" href="/sculpt-ritual" aria-label="Open Sculpt Ritual storefront">
+        <span>Rose quartz gua sha</span>
+        <strong>$28 tool + $12 guide</strong>
+        <small>Bundle offer: SCULPT15</small>
+      </Link>
+    </section>
   );
 }
 

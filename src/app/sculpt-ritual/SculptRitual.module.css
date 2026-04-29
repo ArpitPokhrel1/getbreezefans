@@ -1,0 +1,535 @@
+.page {
+  --sr-ink: #2d211c;
+  --sr-muted: rgba(45, 33, 28, 0.68);
+  --sr-ivory: #fbf5ed;
+  --sr-paper: #fffaf3;
+  --sr-clay: #a9573e;
+  --sr-clay-dark: #7d3727;
+  --sr-blush: #f4d8d1;
+  --sr-line: #dfc7bb;
+  min-height: 100dvh;
+  background: var(--sr-ivory);
+  color: var(--sr-ink);
+}
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid rgba(223, 199, 187, 0.72);
+  padding: 16px clamp(16px, 5vw, 48px);
+  background: rgba(251, 245, 237, 0.9);
+  backdrop-filter: blur(16px);
+}
+
+.brand {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.55rem;
+  font-weight: 720;
+}
+
+.navLinks {
+  display: flex;
+  gap: 18px;
+  color: var(--sr-muted);
+  font-size: 0.92rem;
+  font-weight: 760;
+}
+
+.navLinks a:hover {
+  color: var(--sr-clay);
+}
+
+.hero,
+.trust,
+.products,
+.ritual,
+.bundle,
+.faq,
+.reviews,
+.footer {
+  width: min(1180px, calc(100% - 32px));
+  margin-inline: auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+  gap: clamp(28px, 6vw, 78px);
+  align-items: center;
+  padding: clamp(42px, 7vw, 92px) 0 52px;
+}
+
+.eyebrow {
+  margin: 0 0 16px;
+  color: var(--sr-clay);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.hero h1,
+.sectionTitle,
+.card h2,
+.bundleBox h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 680;
+  letter-spacing: 0;
+  line-height: 0.96;
+}
+
+.hero h1 {
+  max-width: 760px;
+  font-size: clamp(3.1rem, 8vw, 7.6rem);
+}
+
+.italic {
+  display: block;
+  color: var(--sr-clay);
+  font-style: italic;
+}
+
+.hero p {
+  max-width: 58ch;
+  margin: 24px 0 0;
+  color: var(--sr-muted);
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 13px 19px;
+  font-weight: 850;
+  transition: transform 240ms ease, border-color 240ms ease, background 240ms ease;
+}
+
+.primary {
+  background: var(--sr-clay);
+  color: #ffffff;
+  box-shadow: 0 16px 42px rgba(125, 55, 39, 0.18);
+}
+
+.primary:hover {
+  background: var(--sr-clay-dark);
+  transform: translateY(-2px);
+}
+
+.secondary {
+  border: 1px solid var(--sr-line);
+  background: transparent;
+  color: var(--sr-ink);
+}
+
+.secondary:hover {
+  border-color: var(--sr-clay);
+  transform: translateY(-2px);
+}
+
+.heroImage {
+  position: relative;
+  min-height: 650px;
+  overflow: hidden;
+  border: 1px solid var(--sr-line);
+  border-radius: 999px 999px 8px 8px;
+  background: var(--sr-blush);
+  box-shadow: 0 30px 90px rgba(45, 33, 28, 0.12);
+}
+
+.heroImage img,
+.imageTile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.floatingNote {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  left: 22px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: 999px;
+  padding: 14px 18px;
+  background: rgba(255, 250, 243, 0.82);
+  color: var(--sr-ink);
+  font-size: 0.92rem;
+  font-weight: 760;
+  backdrop-filter: blur(14px);
+}
+
+.trust {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px 0 64px;
+}
+
+.trust span {
+  border: 1px solid var(--sr-line);
+  border-radius: 999px;
+  padding: 12px 14px;
+  background: var(--sr-paper);
+  color: rgba(45, 33, 28, 0.68);
+  text-align: center;
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 20px;
+  padding-bottom: 86px;
+}
+
+.sectionIntro {
+  grid-column: 1 / -1;
+  max-width: 820px;
+}
+
+.sectionTitle {
+  font-size: clamp(2.3rem, 5vw, 4.4rem);
+}
+
+.sectionIntro p {
+  max-width: 66ch;
+  color: var(--sr-muted);
+  line-height: 1.72;
+}
+
+.card {
+  overflow: hidden;
+  border: 1px solid var(--sr-line);
+  border-radius: 8px;
+  background: var(--sr-paper);
+  box-shadow: 0 28px 80px rgba(45, 33, 28, 0.09);
+}
+
+.guideCard {
+  background: linear-gradient(145deg, #f6ddd5 0%, #e8b4a7 50%, #b8674b 100%);
+}
+
+.imageTile {
+  position: relative;
+  height: 380px;
+}
+
+.cardBody {
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.pill {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 16px;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(255, 250, 243, 0.84);
+  color: var(--sr-clay);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.card h2 {
+  font-size: clamp(2rem, 4vw, 3.05rem);
+}
+
+.card p {
+  color: var(--sr-muted);
+  line-height: 1.68;
+}
+
+.price {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.price strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.65rem;
+  line-height: 1;
+}
+
+.price span {
+  color: rgba(45, 33, 28, 0.48);
+  font-size: 1.1rem;
+  text-decoration: line-through;
+}
+
+.ritual {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border-block: 1px solid var(--sr-line);
+  background: var(--sr-line);
+}
+
+.ritualItem {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1fr);
+  gap: clamp(24px, 5vw, 72px);
+  align-items: center;
+  padding: clamp(34px, 6vw, 72px);
+  background: var(--sr-paper);
+}
+
+.ritualItem:nth-child(even) .ritualImage {
+  order: 2;
+}
+
+.ritualImage {
+  min-height: 430px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.ritualText span {
+  color: rgba(169, 87, 62, 0.44);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4rem;
+}
+
+.ritualText h2 {
+  margin: 8px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.1rem, 4vw, 4rem);
+  line-height: 1;
+}
+
+.ritualText p {
+  color: var(--sr-muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.bundle {
+  padding: 86px 0;
+}
+
+.bundleBox {
+  max-width: 720px;
+  margin-inline: auto;
+  border: 1px solid var(--sr-line);
+  border-radius: 8px;
+  padding: clamp(24px, 5vw, 48px);
+  background: var(--sr-paper);
+  box-shadow: 0 28px 90px rgba(45, 33, 28, 0.1);
+}
+
+.bundleBox h2 {
+  font-size: clamp(2.3rem, 5vw, 4.5rem);
+}
+
+.bundleBox p {
+  color: var(--sr-muted);
+  line-height: 1.72;
+}
+
+.priceRows {
+  margin: 28px 0;
+  border-block: 1px solid var(--sr-line);
+}
+
+.priceRows div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--sr-line);
+  padding: 15px 0;
+}
+
+.priceRows div:last-child {
+  border-bottom: 0;
+}
+
+.code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid var(--sr-line);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--sr-ivory);
+}
+
+.code strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.16em;
+}
+
+.faq,
+.reviews {
+  padding-bottom: 86px;
+}
+
+.faqGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(24px, 5vw, 64px);
+}
+
+.faqList {
+  border-block: 1px solid var(--sr-line);
+}
+
+.faqList details {
+  border-bottom: 1px solid var(--sr-line);
+  padding: 18px 0;
+}
+
+.faqList details:last-child {
+  border-bottom: 0;
+}
+
+.faqList summary {
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.faqList p {
+  color: var(--sr-muted);
+  line-height: 1.7;
+}
+
+.reviewGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.review {
+  border: 1px solid var(--sr-line);
+  border-radius: 8px;
+  padding: 22px;
+  background: var(--sr-paper);
+}
+
+.stars {
+  color: var(--sr-clay);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.review p {
+  color: var(--sr-muted);
+  line-height: 1.65;
+}
+
+.review strong {
+  display: block;
+  margin-top: 18px;
+}
+
+.review small {
+  color: rgba(45, 33, 28, 0.56);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--sr-line);
+  padding: 28px 0 40px;
+  color: var(--sr-muted);
+}
+
+.footer strong {
+  color: var(--sr-ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.6rem;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .products,
+  .ritualItem,
+  .faqGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroImage {
+    min-height: 420px;
+  }
+
+  .trust,
+  .reviewGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ritualItem:nth-child(even) .ritualImage {
+    order: initial;
+  }
+}
+
+@media (max-width: 620px) {
+  .nav {
+    position: static;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .navLinks {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .actions,
+  .primary,
+  .secondary {
+    width: 100%;
+  }
+
+  .heroImage {
+    min-height: 350px;
+  }
+
+  .trust,
+  .reviewGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ritualItem {
+    padding: 24px;
+  }
+
+  .ritualImage {
+    min-height: 300px;
+  }
+
+  .code {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

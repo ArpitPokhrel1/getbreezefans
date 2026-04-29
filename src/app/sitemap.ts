@@ -5,7 +5,7 @@ import { getSiteUrl } from "@/lib/site-url";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const siteUrl = getSiteUrl();
-  const staticUrls = ["/", ...pageBriefs.map((page) => page.url)];
+  const staticUrls = ["/", "/sculpt-ritual", ...pageBriefs.map((page) => page.url)];
   const uniqueUrls = Array.from(new Set(staticUrls));
 
   return uniqueUrls.map((url) => ({
