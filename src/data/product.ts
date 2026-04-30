@@ -1,265 +1,290 @@
 export type ProductVariant = {
   id: string;
   label: string;
-  color: string;
   priceCents: number;
   compareAtCents?: number;
-  quantity: number;
-  size?: string;
-  cjVariantId?: string;
-  cjSku?: string;
+  sku?: string;
+  selectedOptions?: Array<{ name: string; value: string }>;
 };
 
 export type ProductImage = {
   src: string;
   alt: string;
-  kind: "product" | "detail" | "lifestyle";
+  width: number;
+  height: number;
 };
 
 export type Product = {
   id: string;
+  shopifyId?: string;
   slug: string;
+  handle: string;
   title: string;
   shortTitle: string;
-  category: "fan" | "blanket";
+  category: string;
+  status: "ACTIVE" | "DRAFT";
+  vendor: string;
   tagline: string;
   description: string;
-  retailProductUrl: string;
-  cjProductId: string;
   priceCents: number;
   compareAtCents?: number;
   currency: "usd";
   defaultVariantId: string;
   variants: ProductVariant[];
   images: ProductImage[];
+  tags: string[];
+  bestFor: string[];
+  features: string[];
   specs: Array<{ label: string; value: string }>;
-  detailedSpecs: Array<{ group: string; items: Array<{ label: string; value: string }> }>;
-  benefits: string[];
-  useCases: string[];
-  disclaimers: string[];
+  provenance: "shopify-cli" | "stitch-mcp";
 };
 
-export const portableFan: Product = {
-  id: "portable-turbo-fan",
-  slug: "portable-turbo-fan",
-  title: "Portable Turbo Handheld and Neck Fan",
-  shortTitle: "BreezePod Turbo Fan",
-  category: "fan",
-  tagline: "Pocket airflow for commutes, lines, sidelines, and hot travel days.",
-  description:
-    "A compact rechargeable fan with handheld, desk, and lanyard carry modes for people who want personal airflow without carrying a full-size fan.",
-  retailProductUrl:
-    "https://cjdropshipping.com/product/portable-handheld-fan-speed-adjustable-turbo-mini-fan-reduced-temperature-mode-rechargeable-digital-display-foldable-personal-fan-with-night-light-suitable-for-women-men-outdoor-p-1960960181515612162.html",
-  cjProductId: "1960960181515612162",
-  priceCents: 2999,
-  compareAtCents: 3499,
-  currency: "usd",
-  defaultVariantId: "fan-black",
-  variants: [
-    {
-      id: "fan-black",
-      label: "Black fan",
-      color: "Carbon Black",
-      priceCents: 2999,
-      compareAtCents: 3499,
-      quantity: 1
-    },
-    {
-      id: "fan-white",
-      label: "White fan",
-      color: "Soft White",
-      priceCents: 2999,
-      compareAtCents: 3499,
-      quantity: 1
-    },
-    {
-      id: "fan-black-white-pair",
-      label: "Black + white pair",
-      color: "Mixed set",
-      priceCents: 5499,
-      compareAtCents: 5998,
-      quantity: 2
-    }
-  ],
-  images: [
-    {
-      src: "/images/portable-turbo-fan-main.webp",
-      alt: "Portable turbo handheld fan product photo",
-      kind: "product"
-    },
-    {
-      src: "/images/portable-turbo-fan-detail.webp",
-      alt: "Portable turbo fan side and display detail",
-      kind: "detail"
-    },
-    {
-      src: "/images/portable-turbo-fan-kit.webp",
-      alt: "Portable fan real product packaging and carry view",
-      kind: "lifestyle"
-    }
-  ],
-  specs: [
-    { label: "Speed control", value: "Multi-speed personal airflow" },
-    { label: "Power", value: "Rechargeable USB / Type-C style charging" },
-    { label: "Display", value: "Digital battery and speed readout" },
-    { label: "Carry", value: "Handheld, desk, or lanyard use" },
-    { label: "Colors", value: "Black and white fan options" }
-  ],
-  detailedSpecs: [
-    {
-      group: "Performance",
-      items: [
-        { label: "Airflow mode", value: "Adjustable personal airflow for close-range use" },
-        { label: "Controls", value: "Single-hand power and speed controls" },
-        { label: "Best distance", value: "Designed for personal space, not room cooling" }
-      ]
-    },
-    {
-      group: "Build",
-      items: [
-        { label: "Carry options", value: "Handheld grip, desk placement, lanyard-style carry" },
-        { label: "Charging", value: "USB rechargeable; cable type must be verified with supplier batch" },
-        { label: "Display", value: "Digital battery/speed screen on the handle" }
-      ]
-    },
-    {
-      group: "Launch checks",
-      items: [
-        { label: "Supplier verification", value: "Confirm black and white variant IDs in CJ before live traffic" },
-        { label: "Shipping", value: "U.S. delivery window shown during checkout" },
-        { label: "Guarantee", value: "10-day money-back guarantee for unused items or verified defects" }
-      ]
-    }
-  ],
-  benefits: [
-    "Easy to keep in a work bag, concert bag, stroller caddy, or carry-on",
-    "Black and white color options make it feel less like a novelty gadget",
-    "Digital display reduces the guesswork before leaving the house",
-    "Works as a desk fan after the commute instead of becoming a one-use item"
-  ],
-  useCases: [
-    "Outdoor sports games",
-    "Concert and festival lines",
-    "Theme parks and travel days",
-    "Hot warehouse or delivery shifts",
-    "Dorm rooms and small apartments",
-    "Makeup and skincare routines"
-  ],
-  disclaimers: [
-    "This is a fan, not an air conditioner or medical cooling device.",
-    "Runtime depends on speed setting, battery size, charging habits, and ambient temperature.",
-    "Supplier details, stock, shipping cost, and variant IDs must be verified in CJ before launch."
-  ]
-};
+function cents(value: string) {
+  return Math.round(Number(value) * 100);
+}
 
-export const coolingBlanket: Product = {
-  id: "cooling-blanket",
-  slug: "cooling-blanket",
-  title: "Lightweight Summer Cooling Blanket",
-  shortTitle: "BreezePod Cooling Blanket",
-  category: "blanket",
-  tagline: "A lighter layer for warm bedrooms, couch naps, guest rooms, and travel.",
-  description:
-    "A breathable summer blanket positioned for customers who want less heat retention than a heavy comforter while still keeping a soft layer nearby.",
-  retailProductUrl:
-    "https://www.spoken.io/product/aqua-reversible-cooling-blanket-lightweight-summer-comforter-50-x-60-inches-056HPjC76H7tKnZ0M0gmzY",
-  cjProductId: "cooling-blanket-supplier-pending",
-  priceCents: 4499,
-  compareAtCents: 4999,
-  currency: "usd",
-  defaultVariantId: "blanket-throw-gray",
-  variants: [
-    {
-      id: "blanket-throw-gray",
-      label: "Throw blanket",
-      color: "Cool Gray",
-      size: "50 x 70 in",
-      priceCents: 4499,
-      compareAtCents: 4999,
-      quantity: 1
-    },
-    {
-      id: "blanket-queen-blue",
-      label: "Queen blanket",
-      color: "Soft Blue",
-      size: "90 x 90 in",
-      priceCents: 6499,
-      compareAtCents: 6999,
-      quantity: 1
-    }
-  ],
-  images: [
-    {
-      src: "/images/cooling-blanket-chair.jpg",
-      alt: "Gray lightweight cooling blanket draped on a chair",
-      kind: "product"
-    },
-    {
-      src: "/images/cooling-blanket-sofa.jpg",
-      alt: "Woman resting on a sofa under a gray cooling blanket",
-      kind: "lifestyle"
-    },
-    {
-      src: "/images/cooling-blanket-texture.jpg",
-      alt: "Close-up of gray cooling blanket fabric texture",
-      kind: "detail"
-    }
-  ],
-  specs: [
-    { label: "Fabric feel", value: "Lightweight, smooth summer layer" },
-    { label: "Care", value: "Machine washable, supplier care label applies" },
-    { label: "Sizes", value: "Throw and queen launch options" },
-    { label: "Use", value: "Bed, sofa, guest room, travel, and warm-weather layering" },
-    { label: "Guarantee", value: "10-day money-back guarantee" }
-  ],
-  detailedSpecs: [
-    {
-      group: "Comfort",
-      items: [
-        { label: "Layer type", value: "Lightweight summer blanket, not an active cooling machine" },
-        { label: "Best use", value: "Warm bedrooms, couch naps, guest rooms, travel, and light cover preference" },
-        { label: "Feel", value: "Smooth, breathable hand-feel; exact fabric blend must be verified by supplier" }
-      ]
-    },
-    {
-      group: "Sizing",
-      items: [
-        { label: "Throw", value: "Approx. 50 x 70 in for couch, travel, and solo use" },
-        { label: "Queen", value: "Approx. 90 x 90 in for queen beds and shared light layering" },
-        { label: "Weight", value: "Launch target: lightweight enough for summer storage and travel" }
-      ]
-    },
-    {
-      group: "Buyer expectations",
-      items: [
-        { label: "Cooling claim", value: "Designed to reduce heat retention compared with heavier layers" },
-        { label: "Not a device", value: "Does not chill a room or actively lower body temperature" },
-        { label: "Guarantee", value: "10 days to inspect feel, size, and condition" }
-      ]
-    }
-  ],
-  benefits: [
-    "Gives hot sleepers a lighter option than a bulky comforter",
-    "Works in the exact rooms where customers already feel the problem",
-    "Easy add-on to the fan for customers building a summer comfort kit",
-    "Simple sizing makes it easier to buy than fitted bedding"
-  ],
-  useCases: ["Warm bedrooms", "Couch naps", "Guest rooms", "Dorm rooms", "Road trips", "Summer bedding refresh"],
-  disclaimers: [
-    "This is a passive textile layer, not an active cooling device.",
-    "Cooling feel depends on room temperature, bedding layers, humidity, and personal preference.",
-    "Supplier fabric, size tolerances, care label, and fulfillment route must be verified before launch."
-  ]
-};
+const shopifyPublicationId = "gid://shopify/Publication/174138261735";
 
-export const products = [portableFan, coolingBlanket] as const;
+export const products: Product[] = [
+  {
+    id: "rotating-moon-desk-lamp",
+    shopifyId: "gid://shopify/Product/9527137992935",
+    slug: "rotating-moon-desk-lamp",
+    handle: "rotating-moon-desk-lamp-with-wireless-charging",
+    title: "Rotating Moon Desk Lamp with Wireless Charging",
+    shortTitle: "Rotating Moon Desk Lamp",
+    category: "Lighting",
+    status: "ACTIVE",
+    vendor: "PetChews",
+    tagline: "A sculptural lunar lamp with warm ambient light and wireless charging variants.",
+    description:
+      "A tactile desk lamp built around a floating moon form, soft interior glow, and a compact base for bedside tables, studies, and display shelves.",
+    priceCents: cents("88.32"),
+    compareAtCents: cents("93.12"),
+    currency: "usd",
+    defaultVariantId: "moon-gray-basic",
+    variants: [
+      { id: "moon-gray-basic", label: "Gray / Basic Style", priceCents: cents("88.32"), compareAtCents: cents("88.32"), sku: "FIAEJ08" },
+      { id: "moon-gray-wireless", label: "Gray / Wireless Charger Style", priceCents: cents("93.12"), compareAtCents: cents("93.12"), sku: "AZOQP6OWT" },
+      { id: "moon-white-basic", label: "White / Basic Style", priceCents: cents("88.32"), compareAtCents: cents("88.32"), sku: "LNV2ISF01" },
+      { id: "moon-white-wireless", label: "White / Wireless Charger Style", priceCents: cents("93.12"), compareAtCents: cents("93.12"), sku: "KOZGTKPEP" }
+    ],
+    images: [
+      {
+        src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/99b6494540449cbff4a2ef43003c.png?v=1777569242",
+        alt: "Luxury rotating moon desk lamp glowing above a dark base",
+        width: 547,
+        height: 564
+      },
+      {
+        src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/77d4d2804805985ae6049ee95abc.png?v=1777569252",
+        alt: "Rotating moon desk lamp base and moon detail",
+        width: 532,
+        height: 484
+      }
+    ],
+    tags: ["desk lamp", "wireless charging", "ambient lighting", "gift lighting"],
+    bestFor: ["Bedside lighting", "Study desks", "Gift shoppers", "Ambient display shelves"],
+    features: ["Warm moon-style glow", "Wireless charging variant", "Gray and white finishes", "Compact sculptural base"],
+    specs: [
+      { label: "Shopify product", value: "Active" },
+      { label: "Publication", value: shopifyPublicationId },
+      { label: "Variants", value: "Gray or white, basic or wireless charging" },
+      { label: "Source", value: "Shopify CLI plus Stitch product screen" }
+    ],
+    provenance: "shopify-cli"
+  },
+  {
+    id: "retro-mini-hd-camera",
+    shopifyId: "gid://shopify/Product/9527134716135",
+    slug: "retro-mini-hd-camera",
+    handle: "retro-mini-1080p-hd-camera-with-screen",
+    title: "Retro Mini 1080p HD Camera with Screen",
+    shortTitle: "Retro Mini HD Camera",
+    category: "Electronics",
+    status: "ACTIVE",
+    vendor: "PetChews",
+    tagline: "A pocket-size retro camera for short video, travel clips, and simple gifting.",
+    description:
+      "A compact 1080p HD camera with a built-in display, loop recording, microSD support, and a small retro profile for casual everyday capture.",
+    priceCents: cents("72.87"),
+    compareAtCents: cents("108.80"),
+    currency: "usd",
+    defaultVariantId: "camera-no-card",
+    variants: [
+      { id: "camera-no-card", label: "Black / No memory card", priceCents: cents("72.87"), compareAtCents: cents("72.87"), sku: "OKH5NZ8" },
+      { id: "camera-16g", label: "Black / With 16G memory card", priceCents: cents("84.82"), compareAtCents: cents("84.82"), sku: "BQIH8U0SA" },
+      { id: "camera-32g", label: "Black / With 32G memory card", priceCents: cents("90.82"), compareAtCents: cents("90.82"), sku: "KQ5M70BXV" },
+      { id: "camera-64g", label: "Black / With 64G memory card", priceCents: cents("96.81"), compareAtCents: cents("96.81"), sku: "UZ3ESCYI9" },
+      { id: "camera-128g", label: "Black / With 128G memory card", priceCents: cents("108.80"), compareAtCents: cents("108.80"), sku: "C3M4JR0VG" }
+    ],
+    images: [
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/e7e99ad44ecb8271f5660fb4522f.png?v=1777569229", alt: "Retro mini black HD camera with display", width: 542, height: 647 },
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/494668044bb7acdfc7184da77a0b.png?v=1777569238", alt: "Retro mini camera alternate product angle", width: 542, height: 647 }
+    ],
+    tags: ["1080p camera", "retro camera", "portable camera", "travel camera"],
+    bestFor: ["Travel clips", "School and hiking", "Gift shoppers", "Simple one-button recording"],
+    features: ["1080p HD photo and video", "Built-in display", "MicroSD support from 8GB to 512GB", "Loop recording"],
+    specs: [
+      { label: "Battery", value: "200mAh, about 2 to 3 hours depending on settings" },
+      { label: "Microphone", value: "Mono" },
+      { label: "Stabilization", value: "Electronic anti-shake" },
+      { label: "Package", value: "400 x 200 x 100 mm" }
+    ],
+    provenance: "shopify-cli"
+  },
+  {
+    id: "arcticshield-winter-jacket",
+    shopifyId: "gid://shopify/Product/9527136092391",
+    slug: "arcticshield-winter-jacket",
+    handle: "arcticshield-mens-winter-cotton-dress-jacket",
+    title: "ArcticShield Men's Winter Cotton Dress Jacket",
+    shortTitle: "ArcticShield Dress Jacket",
+    category: "Outerwear",
+    status: "ACTIVE",
+    vendor: "PetChews",
+    tagline: "A structured cold-weather jacket for polished winter layering.",
+    description:
+      "A cotton dress jacket positioned for shoppers who want a cleaner winter silhouette than casual puffers while keeping everyday warmth in mind.",
+    priceCents: cents("168.34"),
+    compareAtCents: cents("170.53"),
+    currency: "usd",
+    defaultVariantId: "jacket-black-m",
+    variants: [
+      { id: "jacket-black-m", label: "Black / M", priceCents: cents("168.34"), compareAtCents: cents("168.34"), sku: "80N8O44" },
+      { id: "jacket-black-l", label: "Black / L", priceCents: cents("169.47"), compareAtCents: cents("169.47"), sku: "5QWRA649G" },
+      { id: "jacket-black-xl", label: "Black / XL", priceCents: cents("170.53"), compareAtCents: cents("170.53"), sku: "NTKBDVH31" },
+      { id: "jacket-khaki-m", label: "Khaki / M", priceCents: cents("168.34"), compareAtCents: cents("168.34"), sku: "NY38RXKZN" },
+      { id: "jacket-white-m", label: "White / M", priceCents: cents("168.34"), compareAtCents: cents("168.34"), sku: "DPJ7G347W" }
+    ],
+    images: [
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/1e371bf24f43b8c240c59a7885cb.png?v=1777569254", alt: "Men's winter cotton dress jacket product view", width: 464, height: 461 },
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/5c395fe14f10b47ec8df4da8ed6b.png?v=1777569264", alt: "ArcticShield jacket alternate color view", width: 575, height: 532 }
+    ],
+    tags: ["winter jacket", "cotton jacket", "mens outerwear", "dress jacket"],
+    bestFor: ["Commutes", "Winter errands", "Smart casual outfits", "Gift wardrobes"],
+    features: ["Structured profile", "Multiple colors", "M to XL variants", "Cold-weather layering"],
+    specs: [
+      { label: "Colors", value: "Black, khaki, white, and new seasonal variants" },
+      { label: "Sizes", value: "M, L, XL from fetched Shopify variants" },
+      { label: "Status", value: "Active in Shopify" }
+    ],
+    provenance: "shopify-cli"
+  },
+  {
+    id: "rolife-corner-bookstore-kit",
+    shopifyId: "gid://shopify/Product/9527138386151",
+    slug: "rolife-corner-bookstore-kit",
+    handle: "robotime-rolife-corner-bookstore-diy-miniature-kit",
+    title: "Robotime Rolife Corner Bookstore DIY Miniature Kit",
+    shortTitle: "Corner Bookstore Kit",
+    category: "DIY Objects",
+    status: "ACTIVE",
+    vendor: "PetChews",
+    tagline: "A detailed miniature bookstore kit for slow craft sessions and display shelves.",
+    description:
+      "A hands-on DIY miniature kit for people who like patient assembly, detailed interiors, and display-worthy craft objects.",
+    priceCents: cents("167.01"),
+    compareAtCents: cents("167.01"),
+    currency: "usd",
+    defaultVariantId: "bookstore-dg164",
+    variants: [{ id: "bookstore-dg164", label: "DG164", priceCents: cents("167.01"), compareAtCents: cents("167.01"), sku: "DEGLNHE" }],
+    images: [
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/82c6d7104b92b5c245dd9d22ef3e.webp?v=1777569252", alt: "Robotime Rolife corner bookstore miniature kit", width: 800, height: 800 },
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/6afcff7744459f24a50d731349ce.webp?v=1777569253", alt: "Corner bookstore miniature kit assembled display", width: 800, height: 800 }
+    ],
+    tags: ["miniature kit", "DIY kit", "bookstore model", "craft gift"],
+    bestFor: ["Slow craft evenings", "Display shelves", "Gift projects", "Book lovers"],
+    features: ["Detailed bookstore scene", "Single DG164 variant", "Display-friendly build", "Giftable hobby object"],
+    specs: [
+      { label: "Variant", value: "DG164" },
+      { label: "Status", value: "Active in Shopify" },
+      { label: "Category", value: "DIY miniature kit" }
+    ],
+    provenance: "shopify-cli"
+  },
+  {
+    id: "soft-shaggy-area-rug",
+    shopifyId: "gid://shopify/Product/9527141400807",
+    slug: "soft-shaggy-area-rug",
+    handle: "soft-shaggy-area-rug",
+    title: "Soft Shaggy Area Rug",
+    shortTitle: "Soft Shaggy Area Rug",
+    category: "Home Decor",
+    status: "ACTIVE",
+    vendor: "PetChews",
+    tagline: "Plush texture for bedrooms, dorms, nurseries, and small lounge spaces.",
+    description:
+      "A soft shaggy area rug intended to warm up hard flooring and add visual texture beside a bed, sofa, reading chair, or dorm setup.",
+    priceCents: cents("43.31"),
+    compareAtCents: cents("62.71"),
+    currency: "usd",
+    defaultVariantId: "rug-bag-40x60",
+    variants: [
+      { id: "rug-bag-40x60", label: "A Bag Of US Dollars / 40x60cm", priceCents: cents("43.31"), compareAtCents: cents("43.31"), sku: "35UCILZ" },
+      { id: "rug-bag-50x80", label: "A Bag Of US Dollars / 50x80cm", priceCents: cents("62.71"), compareAtCents: cents("62.71"), sku: "EWO1DCR5F" },
+      { id: "rug-stack-40x60", label: "A Stack Of US Dollars / 40x60cm", priceCents: cents("43.31"), compareAtCents: cents("43.31"), sku: "QFVANZAVF" },
+      { id: "rug-stack-50x80", label: "A Stack Of US Dollars / 50x80cm", priceCents: cents("62.71"), compareAtCents: cents("62.71"), sku: "AGPYRU9BO" }
+    ],
+    images: [
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/364779f9448bb1cde7937d9e9208.png?v=1777569277", alt: "Soft shaggy area rug product image", width: 800, height: 800 },
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/46680528451dab7d38bbbd0ae402.png?v=1777569287", alt: "Soft shaggy rug alternate design", width: 800, height: 800 }
+    ],
+    tags: ["bedroom rug", "cozy room decor", "dorm rug", "fluffy rug"],
+    bestFor: ["Bedrooms", "Dorm rooms", "Nurseries", "Living room accents"],
+    features: ["Shaggy texture", "Two size families", "Soft underfoot feel", "Casual accent styling"],
+    specs: [
+      { label: "Sizes", value: "40x60cm and 50x80cm" },
+      { label: "Use", value: "Floor, bedroom, lounge, nursery, or dorm accent" },
+      { label: "Status", value: "Active in Shopify" }
+    ],
+    provenance: "shopify-cli"
+  },
+  {
+    id: "nany-quilted-shoulder-bag",
+    shopifyId: "gid://shopify/Product/9527150837991",
+    slug: "nany-quilted-shoulder-bag",
+    handle: "nany-quilted-shoulder-bag",
+    title: "Nany Quilted Shoulder Bag",
+    shortTitle: "Nany Quilted Shoulder Bag",
+    category: "Bags",
+    status: "DRAFT",
+    vendor: "PetChews",
+    tagline: "A compact quilted handbag with a chain strap and crossbody-ready profile.",
+    description:
+      "A structured vegan leather shoulder bag for essentials, evenings out, and everyday outfits where a large tote would be too much.",
+    priceCents: cents("126.95"),
+    compareAtCents: cents("126.95"),
+    currency: "usd",
+    defaultVariantId: "bag-caramel",
+    variants: [
+      { id: "bag-caramel", label: "Caramel", priceCents: cents("126.95"), compareAtCents: cents("126.95"), sku: "H0106.4" },
+      { id: "bag-black", label: "Black", priceCents: cents("126.95"), compareAtCents: cents("126.95"), sku: "H0106" }
+    ],
+    images: [
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/2b42916c4554b0fc5b91a4568ab3.jpg?v=1777569368", alt: "Nany quilted shoulder bag", width: 640, height: 640 },
+      { src: "https://cdn.shopify.com/s/files/1/0790/0679/3959/files/1111f3ff4d11aac6174653a50dbc.jpg?v=1777569377", alt: "Quilted shoulder bag alternate angle", width: 800, height: 800 }
+    ],
+    tags: ["quilted shoulder bag", "chain strap bag", "crossbody bag", "vegan leather bag"],
+    bestFor: ["Evenings out", "Compact carry", "Everyday outfits", "Black or caramel styling"],
+    features: ["Quilted vegan leather look", "Rivet chain strap", "Shoulder or crossbody wear", "9 in x 3.4 in x 7 in"],
+    specs: [
+      { label: "Dimensions", value: "9 in L x 3.4 in W x 7 in H" },
+      { label: "Colors", value: "Black and caramel" },
+      { label: "Status", value: "Draft in Shopify" }
+    ],
+    provenance: "shopify-cli"
+  }
+];
+
+export const featuredProduct = products[0];
 
 export function getProduct(productIdOrSlug: string | null | undefined) {
-  return products.find((product) => product.id === productIdOrSlug || product.slug === productIdOrSlug) ?? portableFan;
+  return products.find((product) => product.id === productIdOrSlug || product.slug === productIdOrSlug || product.handle === productIdOrSlug) ?? featuredProduct;
 }
 
 export function getProductByVariant(variantId: string | null | undefined) {
-  return products.find((product) => product.variants.some((variant) => variant.id === variantId)) ?? portableFan;
+  return products.find((product) => product.variants.some((variant) => variant.id === variantId)) ?? featuredProduct;
 }
 
 export function getVariant(productId: string | null | undefined, variantId: string | null | undefined) {

@@ -40,5 +40,5 @@ export function getCheckoutVariant(productId: string, variantId: string) {
 
 export function createOrderNumber() {
   const random = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return `BP-${Date.now()}-${random}`;
+  return `TJ-${Date.now()}-${random}`;
 }

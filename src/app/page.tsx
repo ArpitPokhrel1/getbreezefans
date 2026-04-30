@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Storefront } from "@/components/Storefront";
 
 export const metadata: Metadata = {
-  title: "BreezePod Summer Comfort Shop",
+  title: "Trajun Digital Atelier",
   description:
-    "Shop BreezePod portable neck fans and lightweight cooling blankets for U.S. commutes, travel days, warm rooms, and summer routines."
+    "Explore Trajun, a premium product catalog generated from Shopify CLI product data and a Stitch MCP 3D atelier UI."
 };
 
 export default function HomePage() {

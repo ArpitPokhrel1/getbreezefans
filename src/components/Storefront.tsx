@@ -1,18 +1,11 @@
-import {
-  BatteryCharging,
-  BedDouble,
-  CheckCircle2,
-  Clock3,
-  Droplets,
-  Fan,
-  PackageCheck,
-  Plane,
-  ShieldCheck,
-  Truck
-} from "lucide-react";
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, Box, Gem, Menu, Search, ShieldCheck, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { coolingBlanket, getProduct, portableFan, products, type Product } from "@/data/product";
+import { useMemo, useState } from "react";
+import { featuredProduct, getProduct, products, type Product } from "@/data/product";
 import { formatMoney } from "@/lib/money";
 import { VariantCheckoutForm } from "./VariantCheckoutForm";
 
@@ -21,202 +14,298 @@ type StorefrontProps = {
   productSlug?: string;
 };
 
-const trustItems = [
-  { icon: ShieldCheck, label: "Secure checkout" },
-  { icon: Truck, label: "U.S. delivery" },
-  { icon: PackageCheck, label: "10-day guarantee" },
-  { icon: CheckCircle2, label: "Tracked orders" }
-];
+const collections = ["All", "Lighting", "Electronics", "Outerwear", "DIY Objects", "Home Decor", "Bags"];
 
-const faqs = [
-  {
-    question: "Is BreezePod a Shopify store too?",
-    answer:
-      "The storefront can link to Shopify through NEXT_PUBLIC_SHOPIFY_STORE_URL. Stripe checkout remains available in this app while Shopify is configured."
-  },
-  {
-    question: "What does the 10-day money-back guarantee cover?",
-    answer:
-      "Customers have 10 days from delivery to inspect the product. Unused items and verified defects can be returned under the posted policy."
-  },
-  {
-    question: "Are these medical cooling products?",
-    answer:
-      "No. The fan moves air nearby and the blanket is a passive lightweight textile. Neither product replaces AC, hydration, shade, or medical guidance."
-  },
-  {
-    question: "Why sell a fan and blanket together?",
-    answer:
-      "They solve different parts of summer discomfort: personal airflow outside the home and lighter bedding inside the home."
-  }
-];
+const fadeUp = {
+  hidden: { opacity: 0, y: 44, filter: "blur(10px)" },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)" }
+};
 
-export function Storefront({ page, productSlug = "portable-turbo-fan" }: StorefrontProps) {
+export function Storefront({ page, productSlug }: StorefrontProps) {
+  const reduceMotion = useReducedMotion();
   const isProductPage = page === "product";
-  const activeProduct = getProduct(productSlug);
-  const heroProduct = isProductPage ? activeProduct : portableFan;
-  const secondaryProduct = heroProduct.id === portableFan.id ? coolingBlanket : portableFan;
-  const shopifyUrl = process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL;
+  const activeProduct = isProductPage ? getProduct(productSlug) : featuredProduct;
+  const [category, setCategory] = useState("All");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const visibleProducts = useMemo(
+    () => products.filter((product) => category === "All" || product.category === category),
+    [category]
+  );
 
   return (
     <main>
-      <AnnouncementBar />
-      <Header />
-      <MobileBuyBar product={heroProduct} />
+      <Header open={menuOpen} onToggle={() => setMenuOpen((current) => !current)} />
+      {menuOpen ? <MobileMenu onClose={() => setMenuOpen(false)} /> : null}
+
       <section className="hero-section" id="top">
-        <div className="hero-copy">
-          <span className="eyebrow">Summer comfort, built for real routines</span>
-          <h1>{isProductPage ? heroProduct.title : "Cooler commutes. Lighter nights."}</h1>
-          <p>{isProductPage ? heroProduct.description : "BreezePod pairs a real portable neck fan with a lightweight cooling blanket so customers can solve the two summer moments they actually complain about: moving through heat and trying to rest in it."}</p>
+        <motion.div
+          className="hero-copy"
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+          variants={fadeUp}
+          transition={{ duration: 0.9, ease: [0.32, 0.72, 0, 1] }}
+        >
+          <span className="eyebrow">Trajun Digital Atelier</span>
+          <h1>
+            Curated objects from Shopify data, staged like a private 3D gallery.
+          </h1>
+          <p>
+            Trajun turns the fetched Shopify product list and the Stitch atelier direction into a cinematic ecommerce
+            storefront. Payments are paused; product requests stay intentional until checkout is approved.
+          </p>
           <div className="hero-actions">
-            <a className="primary-link" href="#buy">
-              Shop from {formatMoney(heroProduct.priceCents)}
+            <a className="primary-link" href="#collection">
+              <span>View collection</span>
+              <span className="button-disc">
+                <ArrowUpRight size={16} strokeWidth={1.5} aria-hidden="true" />
+              </span>
             </a>
-            <a className="secondary-link" href="#specs">
-              See specifications
-            </a>
-            {shopifyUrl ? (
-              <a className="secondary-link" href={shopifyUrl} target="_blank" rel="noreferrer">
-                Shopify store
-              </a>
-            ) : null}
+            <Link className="secondary-link" href={`/product/${activeProduct.slug}`}>
+              Featured object
+            </Link>
           </div>
-          <div className="hero-metrics" aria-label="Product highlights">
+          <div className="hero-metrics" aria-label="Catalog signals">
             <span>
-              <strong>US</strong>
-              tracked delivery
+              <strong>{products.length}</strong>
+              products synced
             </span>
             <span>
-              <strong>10</strong>
-              day inspection
+              <strong>{products.filter((product) => product.status === "ACTIVE").length}</strong>
+              active listings
             </span>
             <span>
-              <strong>Stripe</strong>
-              secure checkout
+              <strong>0</strong>
+              payment buttons
             </span>
           </div>
-        </div>
-        <div className="hero-media">
-          <ProductMedia product={heroProduct} />
-        </div>
+        </motion.div>
+
+        <motion.div
+          className="hero-media"
+          initial={reduceMotion ? false : { opacity: 0, y: 30, rotateX: 8 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 1, ease: [0.32, 0.72, 0, 1], delay: 0.1 }}
+        >
+          <ProductStage product={activeProduct} />
+        </motion.div>
       </section>
 
       <section className="trust-strip" aria-label="Store policies">
-        {trustItems.map((item) => (
-          <div key={item.label}>
-            <item.icon size={19} aria-hidden="true" />
-            <span>{item.label}</span>
-          </div>
-        ))}
+        <div>
+          <ShieldCheck size={18} strokeWidth={1.5} aria-hidden="true" />
+          <span>Payment-free preview</span>
+        </div>
+        <div>
+          <Box size={18} strokeWidth={1.5} aria-hidden="true" />
+          <span>Shopify CLI sourced</span>
+        </div>
+        <div>
+          <Gem size={18} strokeWidth={1.5} aria-hidden="true" />
+          <span>Stitch atelier styling</span>
+        </div>
+        <div>
+          <Sparkles size={18} strokeWidth={1.5} aria-hidden="true" />
+          <span>Framer Motion 3D</span>
+        </div>
       </section>
 
       {!isProductPage ? (
-        <section className="collection-section" id="shop">
-          <div className="section-heading section-heading--wide">
-            <span className="eyebrow">Launch collection</span>
-            <h2>Two products, one summer comfort story.</h2>
-            <p>
-              The fan earns the impulse buy. The blanket increases order value without stretching the brand into random
-              gadgets.
-            </p>
-          </div>
-          <div className="product-grid">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+        <>
+          <section className="collection-section" id="collection">
+            <div className="section-heading section-heading--wide">
+              <span className="eyebrow">Live catalog</span>
+              <h2>Objects pulled from the Shopify Admin API, edited for a premium storefront.</h2>
+              <p>
+                Product titles, prices, variants, media, statuses, and details were fetched through Shopify CLI. The
+                visual system comes from the Trajun Stitch project.
+              </p>
+            </div>
+            <div className="filter-rail" aria-label="Collection filters">
+              <SlidersHorizontal size={17} strokeWidth={1.5} aria-hidden="true" />
+              {collections.map((item) => (
+                <button className={item === category ? "is-active" : ""} key={item} type="button" onClick={() => setCategory(item)}>
+                  {item}
+                </button>
+              ))}
+            </div>
+            <div className="product-grid">
+              {visibleProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
+            </div>
+          </section>
+          <AtelierCharacter />
+        </>
+      ) : (
+        <ProductDetail product={activeProduct} />
+      )}
+
+      <section className="proof-section">
+        <div className="section-heading">
+          <span className="eyebrow">Automation notes</span>
+          <h2>Built from three connected sources.</h2>
+        </div>
+        <div className="proof-grid">
+          <article>
+            <strong>Shopify CLI</strong>
+            <p>Fetched live product list, variants, prices, statuses, and media from `petchews-2.myshopify.com`.</p>
+          </article>
+          <article>
+            <strong>Stitch MCP</strong>
+            <p>Used the existing “Trajun Premium 3D Storefront” project as the visual source of truth.</p>
+          </article>
+          <article>
+            <strong>SEO layer</strong>
+            <p>Metadata, product semantics, headings, canonical routes, and sitemap entries now target Trajun.</p>
+          </article>
+        </div>
+      </section>
+
+      <footer className="site-footer">
+        <strong>Trajun</strong>
+        <span>Digital atelier ecommerce preview. No payment integration is active.</span>
+      </footer>
+    </main>
+  );
+}
+
+function Header({ open, onToggle }: { open: boolean; onToggle: () => void }) {
+  return (
+    <header className="site-header">
+      <Link href="/" className="brand" aria-label="Trajun home">
+        <span aria-hidden="true">T</span>
+        Trajun
+      </Link>
+      <nav aria-label="Main navigation">
+        <a href="/#collection">Collection</a>
+        <a href="/#sources">Sources</a>
+        <Link href="/product/rotating-moon-desk-lamp">Moon Lamp</Link>
+      </nav>
+      <button className="icon-button" type="button" aria-label={open ? "Close menu" : "Open menu"} onClick={onToggle}>
+        {open ? <X size={18} strokeWidth={1.5} aria-hidden="true" /> : <Menu size={18} strokeWidth={1.5} aria-hidden="true" />}
+      </button>
+    </header>
+  );
+}
+
+function MobileMenu({ onClose }: { onClose: () => void }) {
+  return (
+    <motion.div
+      className="mobile-menu"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+    >
+      {["Collection", "Featured", "Sources"].map((item, index) => (
+        <motion.a
+          href={item === "Featured" ? "/product/rotating-moon-desk-lamp" : `/#${item.toLowerCase()}`}
+          key={item}
+          onClick={onClose}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 * index, duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+        >
+          {item}
+        </motion.a>
+      ))}
+    </motion.div>
+  );
+}
+
+function ProductStage({ product }: { product: Product }) {
+  return (
+    <div className="stage-shell">
+      <motion.div
+        className="stage-card"
+        animate={{ rotateY: [-6, 6, -6], rotateX: [2, -2, 2] }}
+        transition={{ duration: 8, repeat: Infinity, ease: [0.45, 0, 0.2, 1] }}
+      >
+        <div className="stage-orbit" aria-hidden="true" />
+        <Image
+          src={product.images[0].src}
+          alt={product.images[0].alt}
+          width={product.images[0].width}
+          height={product.images[0].height}
+          priority
+          unoptimized
+          sizes="(max-width: 900px) 92vw, 42vw"
+        />
+        <div className="stage-caption">
+          <span>{product.category}</span>
+          <strong>{product.shortTitle}</strong>
+          <small>{formatMoney(product.priceCents)}</small>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+function ProductCard({ product, index }: { product: Product; index: number }) {
+  return (
+    <motion.article
+      className={`product-card${index % 5 === 0 ? " product-card--feature" : ""}`}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      variants={fadeUp}
+      transition={{ duration: 0.8, delay: Math.min(index * 0.05, 0.3), ease: [0.32, 0.72, 0, 1] }}
+    >
+      <Link href={`/product/${product.slug}`} className="product-card__media" aria-label={`View ${product.title}`}>
+        <Image
+          src={product.images[0].src}
+          alt={product.images[0].alt}
+          width={product.images[0].width}
+          height={product.images[0].height}
+          unoptimized
+          sizes="(max-width: 800px) 100vw, 36vw"
+        />
+      </Link>
+      <div className="product-card__body">
+        <span className="product-card__category">
+          {product.category}
+          <small>{product.status}</small>
+        </span>
+        <h3>{product.title}</h3>
+        <p>{product.tagline}</p>
+        <div className="product-card__footer">
+          <strong>{formatMoney(product.priceCents)}</strong>
+          <Link href={`/product/${product.slug}`}>
+            Inspect <ArrowUpRight size={15} strokeWidth={1.5} aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+function ProductDetail({ product }: { product: Product }) {
+  return (
+    <>
+      <section className="purchase-section" id="request">
+        <div className="purchase-copy">
+          <span className="eyebrow">Product detail</span>
+          <h2>{product.title}</h2>
+          <p>{product.description}</p>
+          <div className="mini-policies">
+            {product.bestFor.map((item) => (
+              <p key={item}>
+                <Search size={17} strokeWidth={1.5} aria-hidden="true" />
+                {item}
+              </p>
             ))}
           </div>
-        </section>
-      ) : null}
-
-      {!isProductPage ? <SculptRitualSection /> : null}
-
-      <section className="purchase-section" id="buy">
-        <div className="purchase-copy">
-          <span className="eyebrow">Checkout</span>
-          <h2>{isProductPage ? activeProduct.tagline : "Choose the product that matches the moment."}</h2>
-          <p>{isProductPage ? activeProduct.description : "Customers do not need a giant sale to believe a summer problem exists. Keep pricing credible, explain the tradeoffs, and let the 10-day guarantee reduce hesitation."}</p>
-          <div className="mini-policies">
-            <p>
-              <Truck size={18} aria-hidden="true" />
-              Tracked U.S. shipping details are confirmed during checkout.
-            </p>
-            <p>
-              <ShieldCheck size={18} aria-hidden="true" />
-              Stripe checkout is active; Shopify link is configurable.
-            </p>
-          </div>
         </div>
-        <VariantCheckoutForm product={activeProduct} />
-      </section>
-
-      <section className="benefits-section">
-        <div className="section-heading">
-          <span className="eyebrow">Why buyers say yes</span>
-          <h2>Specific use cases beat generic summer hype.</h2>
-        </div>
-        <div className="benefit-grid">
-          {activeProduct.benefits.map((benefit, index) => {
-            const icons = [Fan, BatteryCharging, Clock3, Droplets];
-            const Icon = icons[index % icons.length];
-            return (
-              <article key={benefit}>
-                <Icon size={22} aria-hidden="true" />
-                <p>{benefit}</p>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="use-section">
-        <div>
-          <span className="eyebrow">Use cases</span>
-          <h2>{activeProduct.category === "fan" ? "For the hot parts of ordinary days." : "For warm rooms and lighter sleep setups."}</h2>
-        </div>
-        <div className="use-list">
-          {activeProduct.useCases.map((useCase) => (
-            <span key={useCase}>{useCase}</span>
-          ))}
-        </div>
-      </section>
-
-      <section className="moment-section">
-        <div className="section-heading section-heading--wide">
-          <span className="eyebrow">Shop by moment</span>
-          <h2>Make the use case obvious before the customer compares prices.</h2>
-        </div>
-        <div className="moment-grid">
-          {[
-            { title: "Hot commute", copy: "A compact fan for train platforms, parking lots, walks, and errands.", product: portableFan },
-            { title: "Desk or patio", copy: "Personal airflow close by without setting up a full-size fan.", product: portableFan },
-            { title: "Warm bedroom", copy: "A lighter layer when a comforter feels too heavy for summer.", product: coolingBlanket },
-            { title: "Guest room reset", copy: "An easy seasonal add-on for visitors, dorms, and couch naps.", product: coolingBlanket }
-          ].map((moment) => (
-            <article key={moment.title} className="moment-card">
-              <Image
-                src={moment.product.images[0].src}
-                alt={moment.product.images[0].alt}
-                width={520}
-                height={420}
-                unoptimized
-                sizes="(max-width: 800px) 100vw, 25vw"
-              />
-              <div>
-                <h3>{moment.title}</h3>
-                <p>{moment.copy}</p>
-                <Link href={`/product/${moment.product.slug}`}>{moment.product.shortTitle}</Link>
-              </div>
-            </article>
-          ))}
-        </div>
+        <VariantCheckoutForm product={product} />
       </section>
 
       <section className="details-section" id="specs">
         <div className="specs-block">
-          <span className="eyebrow">Specs</span>
-          <h2>Detailed specifications</h2>
+          <span className="eyebrow">Inside data</span>
+          <h2>Specifications</h2>
           <dl>
-            {activeProduct.specs.map((spec) => (
+            {product.specs.map((spec) => (
               <div key={spec.label}>
                 <dt>{spec.label}</dt>
                 <dd>{spec.value}</dd>
@@ -225,215 +314,36 @@ export function Storefront({ page, productSlug = "portable-turbo-fan" }: Storefr
           </dl>
         </div>
         <div className="shipping-block">
-          <Plane size={24} aria-hidden="true" />
-          <h2>10-day guarantee</h2>
-          <p>
-            Orders are intended for U.S. delivery with tracking. Delivery windows, taxes, and shipping options are
-            confirmed at checkout before payment.
-          </p>
-          <p>
-            The guarantee gives customers 10 days from delivery to inspect product feel, color, size, and condition.
-            It does not cover misuse or normal preference changes after use.
-          </p>
-        </div>
-      </section>
-
-      <section className="proof-section">
-        <div className="section-heading">
-          <span className="eyebrow">Why it feels credible</span>
-          <h2>Honest product pages convert better than oversized promises.</h2>
-        </div>
-        <div className="proof-grid">
-          <article>
-            <strong>Real specifications</strong>
-            <p>Color, sizing, use cases, care expectations, and supplier verification notes are written plainly.</p>
-          </article>
-          <article>
-            <strong>Clear limits</strong>
-            <p>The fan is personal airflow and the blanket is a passive textile layer, not medical cooling equipment.</p>
-          </article>
-          <article>
-            <strong>Checkout trust</strong>
-            <p>Stripe checkout, U.S. delivery focus, tracked orders, and the 10-day inspection window sit close to purchase.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="spec-matrix">
-        {activeProduct.detailedSpecs.map((group) => (
-          <article key={group.group}>
-            <h3>{group.group}</h3>
-            <dl>
-              {group.items.map((item) => (
-                <div key={item.label}>
-                  <dt>{item.label}</dt>
-                  <dd>{item.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </article>
-        ))}
-      </section>
-
-      <section className="cross-sell-section">
-        <div>
-          <span className="eyebrow">Complete the summer kit</span>
-          <h2>{secondaryProduct.title}</h2>
-          <p>{secondaryProduct.description}</p>
-          <Link className="secondary-link" href={`/product/${secondaryProduct.slug}`}>
-            View {secondaryProduct.category === "fan" ? "fan" : "blanket"}
-          </Link>
-        </div>
-        <ProductCard product={secondaryProduct} compact />
-      </section>
-
-      <section className="faq-section">
-        <div className="section-heading">
-          <span className="eyebrow">FAQ</span>
-          <h2>Questions before checkout</h2>
-        </div>
-        <div className="faq-list">
-          {faqs.map((faq) => (
-            <details key={faq.question}>
-              <summary>{faq.question}</summary>
-              <p>{faq.answer}</p>
-            </details>
+          <Box size={22} strokeWidth={1.5} aria-hidden="true" />
+          <h2>Features</h2>
+          {product.features.map((feature) => (
+            <p key={feature}>{feature}</p>
           ))}
         </div>
       </section>
-
-      <footer className="site-footer">
-        <strong>BreezePod</strong>
-        <span>Professional summer comfort products for customers in the United States.</span>
-      </footer>
-    </main>
+    </>
   );
 }
 
-function AnnouncementBar() {
+function AtelierCharacter() {
   return (
-    <div className="announcement-bar">
-      <span>Tracked delivery</span>
-      <span>10-day guarantee</span>
-      <span>Secure Stripe checkout</span>
-    </div>
-  );
-}
-
-function Header() {
-  return (
-    <header className="site-header">
-      <Link href="/" className="brand" aria-label="BreezePod home">
-        <span aria-hidden="true" />
-        BreezePod
-      </Link>
-      <nav aria-label="Main navigation">
-        <a href="/#shop">Shop</a>
-        <Link href="/sculpt-ritual">Sculpt Ritual</Link>
-        <a href="#specs">Specs</a>
-        <Link href="/product/portable-turbo-fan">Product</Link>
-      </nav>
-    </header>
-  );
-}
-
-function SculptRitualSection() {
-  return (
-    <section className="sculpt-ritual-section" aria-labelledby="sculpt-ritual-heading">
-      <div className="sculpt-ritual-copy">
-        <span className="eyebrow">New beauty vertical</span>
-        <h2 id="sculpt-ritual-heading">A warmer storefront for daily face sculpting.</h2>
-        <p>
-          Sculpt Ritual is a separate premium beauty page for a rose quartz gua sha tool and the Face Sculpting 101
-          digital guide. It keeps the same Vercel site while giving the product its own editorial buying experience.
-        </p>
-        <Link className="primary-link" href="/sculpt-ritual">
-          Visit Sculpt Ritual
-        </Link>
+    <section className="character-section" id="sources" aria-label="Animated Trajun curator">
+      <div className="section-heading">
+        <span className="eyebrow">Motion system</span>
+        <h2>A small 3D curator keeps the gallery alive without blocking the products.</h2>
       </div>
-      <Link className="sculpt-ritual-card" href="/sculpt-ritual" aria-label="Open Sculpt Ritual storefront">
-        <span>Rose quartz gua sha</span>
-        <strong>$28 tool + $12 guide</strong>
-        <small>Bundle offer: SCULPT15</small>
-      </Link>
+      <motion.div
+        className="curator"
+        initial={{ opacity: 0, y: 36 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.85, ease: [0.32, 0.72, 0, 1] }}
+      >
+        <motion.span className="curator__head" animate={{ y: [-5, 5, -5] }} transition={{ duration: 3.4, repeat: Infinity, ease: [0.45, 0, 0.2, 1] }} />
+        <motion.span className="curator__body" animate={{ rotateY: [-10, 10, -10] }} transition={{ duration: 4.8, repeat: Infinity, ease: [0.45, 0, 0.2, 1] }} />
+        <motion.span className="curator__wand" animate={{ rotate: [-8, 8, -8] }} transition={{ duration: 3.2, repeat: Infinity, ease: [0.45, 0, 0.2, 1] }} />
+        <p>Stitch visuals, Shopify listings, and SEO structure coordinated into one Trajun storefront.</p>
+      </motion.div>
     </section>
-  );
-}
-
-function MobileBuyBar({ product }: { product: Product }) {
-  return (
-    <aside className="mobile-buy-bar" aria-label="Quick checkout">
-      <div>
-        <strong>{product.shortTitle}</strong>
-        <span>From {formatMoney(product.priceCents)}</span>
-      </div>
-      <a href="#buy">Shop now</a>
-    </aside>
-  );
-}
-
-function ProductMedia({ product }: { product: Product }) {
-  const [primary, secondary, tertiary] = product.images;
-
-  return (
-    <div className="photo-board">
-      <div className="photo-board__main">
-        <Image
-          src={primary.src}
-          alt={primary.alt}
-          width={860}
-          height={860}
-          priority
-          unoptimized
-          sizes="(max-width: 900px) 100vw, 48vw"
-        />
-      </div>
-      <div className="photo-board__caption">
-        <strong>{product.shortTitle}</strong>
-        <span>{product.tagline}</span>
-      </div>
-      {secondary ? (
-        <div className="photo-board__mini photo-board__mini--top">
-          <Image src={secondary.src} alt={secondary.alt} width={420} height={420} unoptimized sizes="180px" />
-        </div>
-      ) : null}
-      {tertiary ? (
-        <div className="photo-board__mini photo-board__mini--bottom">
-          <Image src={tertiary.src} alt={tertiary.alt} width={420} height={420} unoptimized sizes="180px" />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function ProductCard({ product, compact = false }: { product: Product; compact?: boolean }) {
-  const Icon = product.category === "fan" ? Fan : BedDouble;
-
-  return (
-    <article className={`product-card${compact ? " product-card--compact" : ""}`}>
-      <Link href={`/product/${product.slug}`} className="product-card__media" aria-label={`View ${product.title}`}>
-        <Image
-          src={product.images[0].src}
-          alt={product.images[0].alt}
-          width={720}
-          height={720}
-          unoptimized
-          sizes="(max-width: 800px) 100vw, 42vw"
-        />
-      </Link>
-      <div className="product-card__body">
-        <span className="product-card__category">
-          <Icon size={17} aria-hidden="true" />
-          {product.category === "fan" ? "Neck fan" : "Cooling blanket"}
-        </span>
-        <h3>{product.title}</h3>
-        <p>{product.tagline}</p>
-        <div className="product-card__footer">
-          <strong>{formatMoney(product.priceCents)}</strong>
-          <Link href={`/product/${product.slug}`}>View details</Link>
-        </div>
-      </div>
-      {!compact ? <VariantCheckoutForm product={product} compact /> : null}
-    </article>
   );
 }

@@ -104,7 +104,7 @@ export function buildCjCreateOrderPayload(
     email: cleanString(order.customer?.email),
     logisticName: cleanString(options.logisticName),
     products: order.items.map((item) => ({
-      productId: cleanString(item.cjProductId) ?? cleanString(options.productId) ?? product.cjProductId,
+      productId: cleanString(item.cjProductId) ?? cleanString(options.productId) ?? product.shopifyId ?? product.id,
       variantId: cleanString(item.cjVariantId) ?? cleanString(options.variantId),
       sku: cleanString(item.cjSku) ?? cleanString(options.variantSku),
       quantity: item.quantity,
@@ -124,11 +124,11 @@ export async function createCjOrder(order: CjOrderForPayload, product: Product) 
     };
   }
 
-  if (!cleanString(product.cjProductId) || product.cjProductId.includes("supplier-pending")) {
+  if (!cleanString(product.shopifyId)) {
     return {
       skipped: true,
       status: "SKIPPED",
-      message: `${product.title} is not mapped to a live CJ product yet`
+      message: `${product.title} is not mapped to a live supplier product yet`
     };
   }
 

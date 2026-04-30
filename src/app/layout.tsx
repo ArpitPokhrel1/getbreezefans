@@ -5,11 +5,20 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "BreezePod Portable Turbo Fan",
-    template: "%s | BreezePod"
+    default: "Trajun Digital Atelier",
+    template: "%s | Trajun"
   },
   description:
-    "A compact portable turbo fan for commutes, sports days, travel, festivals, and hot work shifts across the United States."
+    "Trajun is a premium ecommerce atelier generated from live Shopify CLI product data and a Stitch MCP visual system.",
+  icons: {
+    icon: "/favicon.svg"
+  },
+  openGraph: {
+    title: "Trajun Digital Atelier",
+    description: "A motion-led ecommerce catalog built from Shopify Admin data and Stitch design direction.",
+    type: "website",
+    url: "/"
+  }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

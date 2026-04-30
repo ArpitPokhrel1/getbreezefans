@@ -5,39 +5,39 @@ import { checkoutRequestSchema, getCheckoutVariant } from "../src/server/checkou
 describe("checkout validation", () => {
   it("accepts a known variant and positive quantity", () => {
     const parsed = checkoutRequestSchema.parse({
-      productId: "portable-turbo-fan",
-      variantId: "fan-black-white-pair",
+      productId: "rotating-moon-desk-lamp",
+      variantId: "moon-gray-wireless",
       quantity: 2
     });
 
-    expect(parsed).toEqual({ productId: "portable-turbo-fan", variantId: "fan-black-white-pair", quantity: 2 });
-    expect(getCheckoutVariant(parsed.productId, parsed.variantId).id).toBe("fan-black-white-pair");
+    expect(parsed).toEqual({ productId: "rotating-moon-desk-lamp", variantId: "moon-gray-wireless", quantity: 2 });
+    expect(getCheckoutVariant(parsed.productId, parsed.variantId).id).toBe("moon-gray-wireless");
   });
 
   it("coerces browser form quantity strings", () => {
     const parsed = checkoutRequestSchema.parse({
-      productId: "portable-turbo-fan",
-      variantId: "fan-black",
+      productId: "rotating-moon-desk-lamp",
+      variantId: "moon-gray-basic",
       quantity: "3"
     });
 
-    expect(parsed).toEqual({ productId: "portable-turbo-fan", variantId: "fan-black", quantity: 3 });
+    expect(parsed).toEqual({ productId: "rotating-moon-desk-lamp", variantId: "moon-gray-basic", quantity: 3 });
   });
 
-  it("accepts cooling blanket variants", () => {
+  it("accepts draft catalog variants", () => {
     const parsed = checkoutRequestSchema.parse({
-      productId: "cooling-blanket",
-      variantId: "blanket-queen-blue",
+      productId: "nany-quilted-shoulder-bag",
+      variantId: "bag-black",
       quantity: 1
     });
 
-    expect(getCheckoutVariant(parsed.productId, parsed.variantId).id).toBe("blanket-queen-blue");
+    expect(getCheckoutVariant(parsed.productId, parsed.variantId).id).toBe("bag-black");
   });
 
   it("rejects unknown variants instead of falling back to a default", () => {
     expect(() =>
       checkoutRequestSchema.parse({
-        productId: "portable-turbo-fan",
+        productId: "rotating-moon-desk-lamp",
         variantId: "not-a-real-variant",
         quantity: 1
       })
@@ -47,8 +47,8 @@ describe("checkout validation", () => {
   it("rejects invalid quantities", () => {
     expect(() =>
       checkoutRequestSchema.parse({
-        productId: "portable-turbo-fan",
-        variantId: "fan-black",
+        productId: "rotating-moon-desk-lamp",
+        variantId: "moon-gray-basic",
         quantity: 0
       })
     ).toThrow();

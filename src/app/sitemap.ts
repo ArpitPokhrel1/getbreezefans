@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
-import { pageBriefs } from "@/data/seo";
+import { products } from "@/data/product";
 import { getSiteUrl } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const siteUrl = getSiteUrl();
-  const staticUrls = ["/", "/sculpt-ritual", ...pageBriefs.map((page) => page.url)];
+  const staticUrls = ["/", ...products.map((product) => `/product/${product.slug}`)];
   const uniqueUrls = Array.from(new Set(staticUrls));
 
   return uniqueUrls.map((url) => ({

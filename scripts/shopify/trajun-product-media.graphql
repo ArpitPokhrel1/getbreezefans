@@ -1,0 +1,32 @@
+query TrajunProductMedia {
+  moon: productByHandle(handle: "rotating-moon-desk-lamp-with-wireless-charging") {
+    title
+    media(first: 6) {
+      nodes {
+        preview {
+          image {
+            url
+            width
+            height
+            altText
+          }
+        }
+      }
+    }
+  }
+  bookstore: productByHandle(handle: "robotime-rolife-corner-bookstore-diy-miniature-kit") {
+    title
+    media(first: 6) {
+      nodes {
+        preview {
+          image {
+            url
+            width
+            height
+            altText
+          }
+        }
+      }
+    }
+  }
+}

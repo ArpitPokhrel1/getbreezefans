@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { buildCjCreateOrderPayload } from "../src/lib/cj";
-import { portableFan } from "../src/data/product";
+import { featuredProduct } from "../src/data/product";
 
 const paidOrder = {
   id: "order_123",
@@ -25,11 +25,11 @@ const paidOrder = {
   },
   items: [
     {
-      productId: portableFan.id,
+      productId: featuredProduct.id,
       variantId: "single-black",
-      title: portableFan.title,
+      title: featuredProduct.title,
       quantity: 2,
-      cjProductId: portableFan.cjProductId,
+      cjProductId: featuredProduct.shopifyId,
       cjVariantId: "cj-variant-1",
       cjSku: "SKU-1"
     }
@@ -38,7 +38,7 @@ const paidOrder = {
 
 describe("CJ payload builder", () => {
   it("builds a Create Order V3 payload from order, shipping, customer, and product data", () => {
-    const payload = buildCjCreateOrderPayload(paidOrder, portableFan, {
+    const payload = buildCjCreateOrderPayload(paidOrder, featuredProduct, {
       logisticName: "CJPacket"
     });
 
@@ -50,11 +50,11 @@ describe("CJ payload builder", () => {
     expect(payload.logisticName).toBe("CJPacket");
     expect(payload.products).toEqual([
       {
-        productId: portableFan.cjProductId,
+        productId: featuredProduct.shopifyId,
         variantId: "cj-variant-1",
         sku: "SKU-1",
         quantity: 2,
-        productName: portableFan.title
+        productName: featuredProduct.title
       }
     ]);
   });
@@ -72,7 +72,7 @@ describe("CJ payload builder", () => {
           }
         ]
       },
-      portableFan,
+      featuredProduct,
       {
         variantId: "env-variant",
         variantSku: "ENV-SKU"
@@ -80,14 +80,14 @@ describe("CJ payload builder", () => {
     );
 
     expect(payload.products[0]).toMatchObject({
-      productId: portableFan.cjProductId,
+      productId: featuredProduct.shopifyId,
       variantId: "env-variant",
       sku: "ENV-SKU"
     });
   });
 
   it("does not include API tokens in the CJ payload", () => {
-    const payload = buildCjCreateOrderPayload(paidOrder, portableFan, {
+    const payload = buildCjCreateOrderPayload(paidOrder, featuredProduct, {
       accessToken: "secret-token",
       platformToken: "secret-platform"
     });

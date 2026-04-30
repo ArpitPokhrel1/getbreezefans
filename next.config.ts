@@ -28,6 +28,14 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.pexels.com"
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.shopify.com"
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com"
       }
     ]
   },
@@ -41,7 +49,7 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=(), payment=(self)"
+            value: "camera=(), microphone=(), geolocation=(), payment=()"
           }
         ]
       }
